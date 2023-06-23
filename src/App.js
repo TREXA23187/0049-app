@@ -11,6 +11,7 @@ const DefaultLayout = AsyncLoadable(() => import(/* webpackChunkName: 'default' 
 // 基础页面
 const View404 = AsyncLoadable(() => import(/* webpackChunkName: '404' */ './views/Others/404'));
 const View500 = AsyncLoadable(() => import(/* webpackChunkName: '500' */ './views/Others/500'));
+const Editor = AsyncLoadable(() => import(/* webpackChunkName: 'Editor' */ './views/Editor'));
 const Login = AsyncLoadable(() => import(/* webpackChunkName: 'login' */ './views/Login'));
 
 const App = () => (
@@ -20,7 +21,7 @@ const App = () => (
             <Route path='/500' component={View500} />
             <Route path='/login' component={Login} />
             <Route path='/404' component={View404} />
-            {/* <Route path='/404' component={View404} /> */}
+            <Route path='/editor' component={Editor} />
             <Route component={DefaultLayout} />
         </Switch>
     </Router>

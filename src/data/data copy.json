@@ -1,0 +1,32 @@
+{
+  "container": {
+    "width": 800,
+    "height": 500
+  },
+  "blocks": [
+    {
+      "top": 100,
+      "left": 100,
+      "zIndex": 1,
+      "key": "text",
+      "index": 0,
+      "props": { "text": "text", "color": "#ff0000", "size": "14px" }
+    },
+    {
+      "top": 200,
+      "left": 200,
+      "zIndex": 1,
+      "key": "button",
+      "index": 1,
+      "props": { "text": "my button", "type": "primary", "size": "large" }
+    },
+    {
+      "top": 300,
+      "left": 300,
+      "zIndex": 1,
+      "key": "input",
+      "index": 2,
+      "model": {}
+    }
+  ]
+}
