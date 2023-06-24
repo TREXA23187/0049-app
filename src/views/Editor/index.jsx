@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import EditorApp from './editor';
 import { ConfigProvider } from 'antd';
 import jsonData from '@/data/data.json';
-import { registerConfig as config } from '@/utils/editor-config';
+import { registerConfig as config } from '@/configs/editor-config';
 
 export default function Editor() {
     const [data, setData] = useState(jsonData);

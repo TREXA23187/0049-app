@@ -21,6 +21,7 @@ import { useCommand } from './useCommand';
 import ExportModal from '@/components/editor/ExportModal';
 import MenuDropdown from '@/components/editor/MenuDropdown';
 import EditorOperator from '@/components/editor/EditorOperator';
+import Grid from '../../components/editor/grid';
 
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -404,10 +405,10 @@ export default function EditorApp(props) {
                         }}
                         ref={containerRef}
                         onMouseDown={containerMouseDown}>
+                        {!isPreview && <Grid />}
                         <div
                             style={{
-                                ...containerStyles,
-                                backgroundColor: 'rgba(190,190,190,0.1)'
+                                ...containerStyles
                             }}>
                             {data.blocks.map((block, index) => {
                                 return (

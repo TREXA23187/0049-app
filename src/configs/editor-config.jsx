@@ -194,33 +194,28 @@ registerConfig.register({
 
 const columns = [
     {
-        title: 'id',
-        dataIndex: 'key',
-        rowScope: 'row'
+        title: 'Col_1',
+        dataIndex: 'col_1',
+        key: 'col_1'
     },
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name'
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age'
+        title: 'Col_2',
+        dataIndex: 'col_2',
+        key: 'col_2'
     }
 ];
 const data = [
     {
         key: '1',
-        name: 'Trex',
-        age: 18
+        col_1: 'content_1',
+        col_2: 'content_2'
     }
 ];
 
 registerConfig.register({
     label: 'table',
     preview: () => <Table style={{ width: '180px' }} columns={columns} dataSource={data} pagination={false} />,
-    render: () => <Table style={{ width: '180px' }} />,
+    render: () => <Table style={{ width: '180px' }} columns={columns} dataSource={data} pagination={false} />,
     key: 'table',
     model: {
         default: 'Bound Field'
