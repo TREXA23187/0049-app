@@ -73,7 +73,7 @@ const Login = props => {
                         </Form.Item>
                         <Form.Item>
                             <Button type='primary' htmlType='submit' className='login-form-button' loading={loading}>
-                                登录
+                                Login
                             </Button>
                         </Form.Item>
                     </Form>

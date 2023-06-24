@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { HomeOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { type } from 'os-browserify';
 
-// 处理 pathname
 const getOpenKeys = (string, collapsed) => {
     let newStr = '',
         newArr = [],
@@ -31,7 +30,6 @@ const SideMenu = props => {
     let { openKeys, selectedKeys } = state;
     let menuProps = props.collapsed ? {} : { openKeys };
 
-    // 页面刷新的时候可以定位到 menu 显示
     useEffect(() => {
         let { pathname } = props.location;
         setstate(prevState => {
@@ -43,7 +41,6 @@ const SideMenu = props => {
         });
     }, [props]);
 
-    // 只展开一个 SubMenu
     const onOpenChange = openKeys => {
         setstate(prevState => {
             if (openKeys.length === 0 || openKeys.length === 1) {
@@ -51,7 +48,6 @@ const SideMenu = props => {
             }
             const latestOpenKey = openKeys[openKeys.length - 1];
 
-            // 这里与定义的路由规则有关
             if (latestOpenKey.includes(openKeys[0])) {
                 return { ...prevState, openKeys };
             } else {

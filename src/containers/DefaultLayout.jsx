@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import routes from '@/routes';
-import { Layout, FloatButton, message, Tabs } from 'antd';
+import { Layout, FloatButton, Tabs } from 'antd';
 import '@/style/layout.less';
 import { useTranslation } from 'react-i18next';
 
@@ -55,7 +55,6 @@ export default function DefaultLayout(props) {
     const loginOut = () => {
         localStorage.clear();
         props.history.push('/login');
-        // message.success('登出成功!');
     };
 
     const remove = (targetKey, action) => {
