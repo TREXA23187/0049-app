@@ -51,6 +51,7 @@ export default function Console() {
                 data={currentCardData}
                 isEdit={isEditDrawer}
                 open={drawerOpen}
+                refreshList={refresh}
                 onClose={() => {
                     setCurrentCardData({});
                     setDrawOpen(false);

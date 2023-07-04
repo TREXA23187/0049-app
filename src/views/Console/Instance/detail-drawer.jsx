@@ -4,8 +4,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import { createInstance } from '@/api/instance';
 
 export default function DetailDrawer(props) {
-    const { data, open, isEdit, onClose } = props;
-    const { title, description, id, template_id, model_id, is_running, url, created_time } = data;
+    const { data, open, isEdit, onClose, refreshList } = props;
+    const { title, description, id, template_id, model_id, status, url, created_time } = data;
 
     const [fileList, setFileList] = useState([]);
 
@@ -44,8 +44,15 @@ export default function DetailDrawer(props) {
 
     const onFinish = async () => {
         const res = await createInstance(form.getFieldsValue());
-        console.log(res);
+
+        if (res.code == 0) {
+            messageApi.success(`instance created successfully`);
+        } else {
+            messageApi.error(res.msg);
+        }
+        refreshList();
     };
+
     const onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
     };
@@ -167,7 +174,7 @@ export default function DetailDrawer(props) {
                         <Descriptions.Item label='Model'>{model_id}</Descriptions.Item>
                         <Descriptions.Item label='URL'>{url}</Descriptions.Item>
                         <Descriptions.Item label='Status'>
-                            {is_running ? (
+                            {status == 1 ? (
                                 <div>
                                     <Badge status='success' /> <span>Running</span>
                                 </div>

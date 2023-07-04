@@ -4,7 +4,7 @@ import { CopyOutlined } from '@ant-design/icons';
 
 export default function InstanceCard(props) {
     const { data, onCardClick } = props;
-    const { title, description, id, is_running, url } = data;
+    const { title, description, id, status, url } = data;
 
     return (
         <Card
@@ -16,7 +16,7 @@ export default function InstanceCard(props) {
             <div>{description}</div>
             <div>instance id:{id}</div>
             <div style={{ position: 'absolute', left: '30px', bottom: '20px' }}>
-                {is_running ? (
+                {status == 1 ? (
                     <div>
                         <Badge status='success' /> <span>Running</span>
                     </div>
