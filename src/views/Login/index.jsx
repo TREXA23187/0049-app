@@ -37,17 +37,6 @@ const Login = props => {
         // }
     };
 
-    useEffect(() => {
-        notification.open({
-            message: '欢迎使用管理平台',
-            duration: null
-            // description: '账号 admin(管理员) 其他(游客) 密码随意'
-        });
-        return () => {
-            notification.destroy();
-        };
-    }, []);
-
     return (
         <Layout className='login animated fadeIn'>
             <div className='model'>

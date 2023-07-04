@@ -15,7 +15,6 @@ const DefaultLayout = AsyncLoadable(() => import(/* webpackChunkName: 'default' 
 // 基础页面
 const View404 = AsyncLoadable(() => import(/* webpackChunkName: '404' */ './views/Others/404'));
 const View500 = AsyncLoadable(() => import(/* webpackChunkName: '500' */ './views/Others/500'));
-const Editor = AsyncLoadable(() => import(/* webpackChunkName: 'Editor' */ './views/Editor'));
 const Login = AsyncLoadable(() => import(/* webpackChunkName: 'login' */ './views/Login'));
 
 const App = () => {

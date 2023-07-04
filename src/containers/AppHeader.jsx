@@ -27,18 +27,14 @@ const AppHeader = props => {
     const items = [
         {
             key: '1',
-            type: 'group',
-            label: t('个人菜单'),
-            children: [
-                {
-                    key: '1-1',
-                    label: (
-                        <span>
-                            <AppstoreOutlined /> {t('模型仓库')}
-                        </span>
-                    )
-                }
-            ]
+            label: (
+                <span onClick={() => history.push('/console')}>
+                    <AppstoreOutlined /> {t('控制台')}
+                </span>
+            )
+        },
+        {
+            type: 'divider'
         },
         {
             key: '2',
@@ -97,7 +93,7 @@ const AppHeader = props => {
     ];
 
     return (
-        <Header className='header' style={{ height: '7vh' }}>
+        <Header className='header' style={{ height: '50px' }}>
             <div className='left'>
                 {showBack && (
                     <ArrowLeftOutlined
@@ -121,14 +117,9 @@ const AppHeader = props => {
                     </Badge>
                 </div>
                 <div>
-                    {/* <Dropdown menu={menu} overlayStyle={{ width: 1050 }}>
-                        <div className='ant-dropdown-link'>
-                            <Avatar src={avatar} alt='avatar' style={{ cursor: 'pointer' }} />
-                        </div>
-                    </Dropdown> */}
                     <Dropdown menu={{ items }} placement='bottomLeft' arrow>
                         <div style={{ cursor: 'pointer' }}>
-                            <Avatar src={avatar} alt='avatar' />
+                            <Avatar src={avatar} alt='avatar' className='mr15' />
                             <span style={{ position: 'absolute', left: 50, top: 12 }}>{userInfo.username}</span>
                         </div>
                     </Dropdown>
