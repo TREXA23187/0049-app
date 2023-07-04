@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Menu, Dropdown, Layout, Avatar, Badge } from 'antd';
+import { Dropdown, Layout, Avatar, Badge } from 'antd';
 import {
     BellOutlined,
     EditOutlined,
@@ -32,7 +31,7 @@ const AppHeader = props => {
         {
             key: '1',
             label: (
-                <span onClick={() => history.push('/console')}>
+                <span onClick={() => history.push('/console/instance')}>
                     <AppstoreOutlined /> {t('控制台')}
                 </span>
             )
@@ -102,7 +101,8 @@ const AppHeader = props => {
                 {location.pathname != '/index' && (
                     <ArrowLeftOutlined
                         onClick={() => {
-                            history.push('/index');
+                            history.goBack();
+                            // history.push('/index');
                         }}
                     />
                 )}
@@ -131,13 +131,6 @@ const AppHeader = props => {
             </div>
         </Header>
     );
-};
-
-AppHeader.propTypes = {
-    menuClick: PropTypes.func,
-    avatar: PropTypes.string,
-    menuToggle: PropTypes.bool,
-    loginOut: PropTypes.func
 };
 
 export default AppHeader;

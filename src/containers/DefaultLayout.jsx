@@ -12,6 +12,7 @@ import menus from '@/routes/menus';
 import avatar from '@/assets/images/user.png';
 
 import { ss, ls } from '@/utils/storage.js';
+import ConsoleLayout from './ConsoleLayout.jsx';
 
 const { Content } = Layout;
 
@@ -42,13 +43,17 @@ export default function DefaultLayout(props) {
                                     key={item.path}
                                     path={item.path}
                                     exact={item.exact}
-                                    render={p =>
-                                        !item.auth || item.auth.indexOf(auth) !== -1 ? (
-                                            <item.component />
-                                        ) : (
-                                            <Redirect to='/404' {...p} />
-                                        )
-                                    }></Route>
+                                    render={p => {
+                                        if (p.location.pathname.startsWith('/console')) {
+                                            return (
+                                                <ConsoleLayout>
+                                                    <item.component />
+                                                </ConsoleLayout>
+                                            );
+                                        } else {
+                                            return <item.component />;
+                                        }
+                                    }}></Route>
                             );
                         })}
                         <Redirect to='/404' />

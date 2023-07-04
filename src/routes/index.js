@@ -6,13 +6,21 @@ const Index = AsyncLoadable(() => import(/* webpackChunkName: 'index' */ '@/view
 // editor
 const Editor = AsyncLoadable(() => import(/* webpackChunkName: 'editor' */ '@/views/Editor'));
 
-// repository
-const Console = AsyncLoadable(() => import(/* webpackChunkName: 'editor' */ '@/views/Console'));
+// instance
+const Instance = AsyncLoadable(() => import(/* webpackChunkName: 'instance' */ '@/views/Console/Instance'));
+
+// template
+const Template = AsyncLoadable(() => import(/* webpackChunkName: 'template' */ '@/views/Console/Template'));
+
+// model
+const Model = AsyncLoadable(() => import(/* webpackChunkName: 'model' */ '@/views/Console/Model'));
 
 const routes = [
     { path: '/index', exact: true, name: 'index', component: Index },
     { path: '/editor', exact: true, name: 'editor', component: Editor },
-    { path: '/console', exact: true, name: 'console', component: Console }
+    { path: '/console/instance', exact: true, name: 'instance', component: Instance },
+    { path: '/console/template', exact: true, name: 'template', component: Template },
+    { path: '/console/model', exact: true, name: 'model', component: Model }
 ];
 
 export default routes;
