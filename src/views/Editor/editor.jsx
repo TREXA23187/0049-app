@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { Layout, theme, message, Button, Tabs } from 'antd';
 import {
     RollbackOutlined,
@@ -10,7 +11,8 @@ import {
     EditOutlined,
     EyeOutlined,
     CopyOutlined,
-    ClearOutlined
+    ClearOutlined,
+    SaveOutlined
 } from '@ant-design/icons';
 import EditorBlock from './editor-block';
 import './index.css';
@@ -195,6 +197,41 @@ export default function EditorApp(props) {
             handler: () => commands.redo()
         },
         {
+            label: 'Save',
+            icon: <SaveOutlined />,
+            handler: () => {
+                const element = (() => {
+                    return (
+                        <div
+                            style={{
+                                ...containerStyles,
+                                position: 'relative'
+                            }}
+                            ref={containerRef}
+                            onMouseDown={containerMouseDown}>
+                            {data.blocks.map((block, index) => {
+                                return (
+                                    <EditorBlock
+                                        block={block}
+                                        key={index}
+                                        config={config}
+                                        isPreview={true}
+                                        updateBlock={updateBlock}
+                                        onMouseDown={e => blockMouseDown(e, block)}
+                                        globalData={globalData}
+                                        updateGlobalData={updateGlobalData}
+                                    />
+                                );
+                            })}
+                        </div>
+                    );
+                })();
+
+                const htmlString = ReactDOMServer.renderToStaticMarkup(element);
+                console.log(htmlString);
+            }
+        },
+        {
             label: 'Export',
             icon: <ExportOutlined />,
             handler: () => {
@@ -333,11 +370,11 @@ export default function EditorApp(props) {
     ) : (
         <Layout
             style={{
-                minHeight: '100vh'
+                height: '90vh'
             }}
             hasSider>
             <Sider theme='light' width={'20%'}>
-                <div style={{ overflow: 'scroll', height: '670px' }}>
+                <div style={{ overflow: 'scroll', height: '95%' }}>
                     {config.componentList.map((component, index) => {
                         return (
                             <div
@@ -395,7 +432,7 @@ export default function EditorApp(props) {
                     style={{
                         margin: '20px 16px',
                         position: 'relative',
-                        minHeight: '500px'
+                        height: '500px'
                     }}>
                     <div
                         style={{
@@ -439,12 +476,12 @@ export default function EditorApp(props) {
                         />
                     </div>
                 </Content>
-                <Footer
+                {/* <Footer
                     style={{
                         textAlign: 'center'
                     }}>
                     ©2023 Created by Trex
-                </Footer>
+                </Footer> */}
             </Layout>
 
             <Sider theme='light' width={'20%'}>

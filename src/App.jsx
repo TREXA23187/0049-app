@@ -40,8 +40,7 @@ const App = () => {
                     <Route path='/500' component={View500} />
                     <Route path='/login' component={Login} />
                     <Route path='/404' component={View404} />
-                    <Route path='/editor' component={Editor} />
-                    <Route component={DefaultLayout} />
+                    <Route render={() => <DefaultLayout />} />
                 </Switch>
             </Router>
         </ConfigProvider>

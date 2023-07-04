@@ -6,52 +6,109 @@ import {
     EditOutlined,
     GithubOutlined,
     LogoutOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    SettingOutlined
+    ArrowLeftOutlined,
+    SettingOutlined,
+    AppstoreOutlined
 } from '@ant-design/icons';
 import { changeLocale } from '@/locale/utils';
+import { ls } from '@/utils/storage';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 
 const { Header } = Layout;
 
+const userInfo = ls.get('user') ?? { username: 'visitor' };
+
 const AppHeader = props => {
-    let { menuClick, avatar, menuToggle, loginOut } = props;
-    const menu = (
-        <Menu style={{ width: 182 }}>
-            <Menu.ItemGroup title='用户设置'>
-                <Menu.Divider />
-                <Menu.Item>
-                    <EditOutlined /> 个人设置
-                </Menu.Item>
-                <Menu.Item>
-                    <SettingOutlined /> 系统设置
-                </Menu.Item>
-                <Menu.SubMenu
-                    title={
+    let { avatar, loginOut, showBack } = props;
+    const { t } = useTranslation();
+    const history = useHistory();
+
+    const items = [
+        {
+            key: '1',
+            type: 'group',
+            label: t('个人菜单'),
+            children: [
+                {
+                    key: '1-1',
+                    label: (
                         <span>
-                            <SettingOutlined style={{ marginRight: 5 }} />
-                            <span>语言设置</span>
+                            <AppstoreOutlined /> {t('模型仓库')}
                         </span>
-                    }>
-                    <Menu.Item onClick={() => changeLocale('zh')}>简体中文</Menu.Item>
-                    <Menu.Item onClick={() => changeLocale('en')}>English</Menu.Item>
-                </Menu.SubMenu>
-            </Menu.ItemGroup>
-            <Menu.Divider />
-            <Menu.Item>
+                    )
+                }
+            ]
+        },
+        {
+            key: '2',
+            type: 'group',
+            label: t('用户设置'),
+            children: [
+                {
+                    key: '2-1',
+                    label: (
+                        <span>
+                            <EditOutlined /> {t('个人设置')}
+                        </span>
+                    )
+                },
+                {
+                    key: '2-2',
+                    label: (
+                        <span>
+                            <SettingOutlined /> {t('系统设置')}
+                        </span>
+                    ),
+                    children: [
+                        {
+                            key: '2-2-1',
+                            label: (
+                                <span>
+                                    <SettingOutlined /> {t('语言设置')}
+                                </span>
+                            ),
+                            children: [
+                                {
+                                    key: '2-2-1-1',
+                                    label: <span onClick={() => changeLocale('zh')}>简体中文</span>
+                                },
+                                {
+                                    key: '2-2-1-2',
+                                    label: <span onClick={() => changeLocale('en')}>English</span>
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            type: 'divider'
+        },
+        {
+            key: '3',
+            label: (
                 <span onClick={loginOut}>
-                    <LogoutOutlined /> 退出登录
+                    <LogoutOutlined /> {t('退出登录')}
                 </span>
-            </Menu.Item>
-        </Menu>
-    );
+            )
+        }
+    ];
+
     return (
-        <Header className='header'>
+        <Header className='header' style={{ height: '7vh' }}>
             <div className='left'>
-                {menuToggle ? <MenuUnfoldOutlined onClick={menuClick} /> : <MenuFoldOutlined onClick={menuClick} />}
+                {showBack && (
+                    <ArrowLeftOutlined
+                        onClick={() => {
+                            history.push('/index');
+                        }}
+                    />
+                )}
             </div>
             <div className='right'>
-                {/* <div className='mr15'>
+                <div className='mr15'>
                     <a rel='noopener noreferrer' href='/' target='_blank'>
                         <GithubOutlined style={{ color: '#000' }} />
                     </a>
@@ -62,11 +119,17 @@ const AppHeader = props => {
                             <BellOutlined />
                         </a>
                     </Badge>
-                </div> */}
+                </div>
                 <div>
-                    <Dropdown menu={menu} overlayStyle={{ width: 1050 }}>
+                    {/* <Dropdown menu={menu} overlayStyle={{ width: 1050 }}>
                         <div className='ant-dropdown-link'>
                             <Avatar src={avatar} alt='avatar' style={{ cursor: 'pointer' }} />
+                        </div>
+                    </Dropdown> */}
+                    <Dropdown menu={{ items }} placement='bottomLeft' arrow>
+                        <div style={{ cursor: 'pointer' }}>
+                            <Avatar src={avatar} alt='avatar' />
+                            <span style={{ position: 'absolute', left: 50, top: 12 }}>{userInfo.username}</span>
                         </div>
                     </Dropdown>
                 </div>

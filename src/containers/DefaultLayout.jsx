@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import routes from '@/routes';
 import { Layout, FloatButton, Tabs } from 'antd';
 import '@/style/layout.less';
@@ -15,13 +15,6 @@ import { ss, ls } from '@/utils/storage.js';
 
 const { Content } = Layout;
 
-const getMenu = menu => {
-    const auth = ls.get('user')?.role || 0;
-    const newMenu = menu.filter(res => !res.auth || res.auth.indexOf(auth) !== -1);
-
-    return newMenu;
-};
-
 export default function DefaultLayout(props) {
     const { t } = useTranslation();
 
@@ -29,97 +22,19 @@ export default function DefaultLayout(props) {
         ss.set('tabList', [{ title: t('首页'), content: '', key: '/index', closable: false }]);
     }, []);
 
-    const [menu] = useState(prevState => {
-        if (!localStorage.getItem('user')) {
-            props.history.push('/login');
-            return [];
-        } else {
-            return getMenu(menus);
-        }
-    });
-
     let auth = ls.get('user')?.role || 0;
-
-    const [menuToggle, setMenuToggle] = useState(false);
-    const [panes, setPanes] = useState(
-        ss.get('tabList', [{ title: t('首页'), content: '', key: '/index', closable: false }])
-    );
-    const [activeKey, setActiveKey] = useState(panes[0].key);
-
-    const history = useHistory();
-
-    const menuClick = () => {
-        setMenuToggle(!menuToggle);
-    };
 
     const loginOut = () => {
         localStorage.clear();
         props.history.push('/login');
     };
 
-    const remove = (targetKey, action) => {
-        let newActiveKey = activeKey;
-        let lastIndex;
-        panes.forEach((pane, i) => {
-            if (pane.key === targetKey) {
-                lastIndex = i - 1;
-            }
-        });
-        const newPanes = panes.filter(pane => pane.key !== targetKey);
-        if (newPanes.length && newActiveKey === targetKey) {
-            if (lastIndex >= 0) {
-                newActiveKey = newPanes[lastIndex].key;
-            } else {
-                newActiveKey = newPanes[0].key;
-            }
-        }
-        if (newPanes.length === 1) {
-            newPanes[0].closable = false;
-        }
-        setPanes(newPanes);
-        ss.set('tabList', newPanes);
-        setActiveKey(newActiveKey);
-        history.replace(newPanes[0]?.key || '/index');
-    };
-
-    const updateTabs = (key, panes) => {
-        setActiveKey(key);
-        setPanes(panes);
-    };
-
     return (
         <Layout className='app'>
             <FloatButton.BackTop />
-            <AppAside
-                menuToggle={menuToggle}
-                menuClick={menuClick}
-                menu={menu}
-                updateTabs={updateTabs}
-                avatar={avatar}
-                loginOut={loginOut}
-            />
             <Layout style={{ minHeight: '100vh' }}>
-                {/* <AppHeader menuToggle={menuToggle} menuClick={menuClick} avatar={avatar} loginOut={loginOut} /> */}
+                <AppHeader avatar={avatar} loginOut={loginOut} showBack={props.showBack} />
                 <Content className='content'>
-                    <Tabs
-                        hideAdd
-                        type='editable-card'
-                        onChange={key => {
-                            setActiveKey(key);
-                            history.replace(key);
-                        }}
-                        activeKey={activeKey}
-                        onEdit={remove}
-                        style={{ marginBottom: -17 }}
-                        items={
-                            panes?.map(pane => ({
-                                label: pane.title,
-                                key: pane.key,
-                                closable: pane.closable
-                            }))
-                            // <TabPane tab={t(pane.title)} key={pane.key} closable={pane.closable} />
-                        }
-                    />
                     <Switch>
                         {routes.map(item => {
                             return (
@@ -127,11 +42,11 @@ export default function DefaultLayout(props) {
                                     key={item.path}
                                     path={item.path}
                                     exact={item.exact}
-                                    render={props =>
+                                    render={p =>
                                         !item.auth || item.auth.indexOf(auth) !== -1 ? (
                                             <item.component />
                                         ) : (
-                                            <Redirect to='/404' {...props} />
+                                            <Redirect to='/404' {...p} />
                                         )
                                     }></Route>
                             );
