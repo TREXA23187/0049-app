@@ -3,7 +3,7 @@ import { Layout, Card, Col, Row, Button, Drawer } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import RepoCard from './repo-card';
 
-export default function Repository() {
+export default function Console() {
     const [open, setOpen] = useState(false);
     const showDrawer = () => {
         setOpen(true);

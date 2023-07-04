@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Menu, Dropdown, Layout, Avatar, Badge } from 'antd';
 import {
@@ -13,16 +14,19 @@ import {
 import { changeLocale } from '@/locale/utils';
 import { ls } from '@/utils/storage';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 
 const { Header } = Layout;
 
-const userInfo = ls.get('user') ?? { username: 'visitor' };
-
 const AppHeader = props => {
-    let { avatar, loginOut, showBack } = props;
+    let { avatar, loginOut } = props;
     const { t } = useTranslation();
     const history = useHistory();
+    const location = useLocation();
+
+    const userInfo = ls.get('user');
+    if (!userInfo) {
+        history.push('/login');
+    }
 
     const items = [
         {
@@ -95,7 +99,7 @@ const AppHeader = props => {
     return (
         <Header className='header' style={{ height: '50px' }}>
             <div className='left'>
-                {showBack && (
+                {location.pathname != '/index' && (
                     <ArrowLeftOutlined
                         onClick={() => {
                             history.push('/index');
@@ -120,7 +124,7 @@ const AppHeader = props => {
                     <Dropdown menu={{ items }} placement='bottomLeft' arrow>
                         <div style={{ cursor: 'pointer' }}>
                             <Avatar src={avatar} alt='avatar' className='mr15' />
-                            <span style={{ position: 'absolute', left: 50, top: 12 }}>{userInfo.username}</span>
+                            <span>{userInfo?.nick_name}</span>
                         </div>
                     </Dropdown>
                 </div>

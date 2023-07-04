@@ -33,7 +33,7 @@ export default function DefaultLayout(props) {
         <Layout className='app'>
             <FloatButton.BackTop />
             <Layout style={{ minHeight: '100vh' }}>
-                <AppHeader avatar={avatar} loginOut={loginOut} showBack={props.showBack} />
+                <AppHeader avatar={avatar} loginOut={loginOut} />
                 <Content className='content'>
                     <Switch>
                         {routes.map(item => {

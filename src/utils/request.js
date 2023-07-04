@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from '@/constants';
+import { ls } from '@/utils/storage';
 
 const instance = axios.create({
     baseURL: `http://${BASE_URL}:3000`,
@@ -8,6 +9,8 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     config => {
+        config.headers.token = ls.get('user')?.token ?? '';
+
         return config;
     },
     err => {
@@ -18,7 +21,10 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     response => {
         const code = response.data.code;
-        if (code === '10101' || code === '10102') {
+
+        // permission error
+        if (code === 10001) {
+            ls.get('user') && ls.remove('user');
             window.location.replace('/login');
             return;
         }
