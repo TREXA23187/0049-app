@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import routes from '@/routes';
-import { Layout, FloatButton, Tabs } from 'antd';
+import { Layout, FloatButton } from 'antd';
 import '@/style/layout.less';
 import { useTranslation } from 'react-i18next';
 
 import AppHeader from './AppHeader.jsx';
-import AppAside from './AppAside.jsx';
-import AppFooter from './AppFooter.jsx';
-import menus from '@/routes/menus';
 import avatar from '@/assets/images/user.png';
 
 import { ss, ls } from '@/utils/storage.js';

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Card, Badge } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 
-export default function RepoCard(props) {
+export default function InstanceCard(props) {
     const { data, onCardClick } = props;
-    const { title, description, instance_id, is_running, url } = data;
+    const { title, description, id, is_running, url } = data;
 
     return (
         <Card
@@ -14,7 +14,7 @@ export default function RepoCard(props) {
             style={{ margin: '10px 5px', height: '230px', position: 'relative' }}
             onClick={() => onCardClick(data)}>
             <div>{description}</div>
-            <div>instance id:{instance_id}</div>
+            <div>instance id:{id}</div>
             <div style={{ position: 'absolute', left: '30px', bottom: '20px' }}>
                 {is_running ? (
                     <div>

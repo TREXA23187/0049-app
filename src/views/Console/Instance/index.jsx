@@ -1,65 +1,44 @@
 import React, { useState } from 'react';
-import { Layout, Col, Row, Button } from 'antd';
+import { Col, Row, Button } from 'antd';
 import InstanceCard from './instance-card';
 import DetailDrawer from './detail-drawer';
+import { getInstanceList } from '@/api/instance';
+import { useRequest } from '@umijs/hooks';
 
 export default function Console() {
     const [drawerOpen, setDrawOpen] = useState(false);
     const [currentCardData, setCurrentCardData] = useState({});
+    const [isEditDrawer, setIsEditDrawer] = useState(false);
 
     const onCardClick = data => {
-        console.log(data);
+        setIsEditDrawer(false);
         setDrawOpen(true);
         setCurrentCardData(data);
     };
 
-    const cardList = [
-        {
-            title: 'Iris',
-            description: 'Card content',
-            instance_id: '1231231',
-            template_id: '56999031',
-            model: 'random forest',
-            url: '127.0.0.1:5005',
-            created_time: '2023-06-30'
-        },
-        {
-            title: 'Iris',
-            description: 'Card content',
-            instance_id: '1231231',
-            template_id: '56999031',
-            model: 'random forest',
-            url: '127.0.0.1:5005'
-        },
-        {
-            title: 'Iris',
-            description: 'Card content',
-            instance_id: '1231231',
-            template_id: '56999031',
-            model: 'random forest',
-            url: '127.0.0.1:5005'
-        },
-        {
-            title: 'Iris',
-            description: 'Card content',
-            instance_id: '1231231',
-            template_id: '56999031',
-            model: 'random forest',
-            url: '127.0.0.1:5005'
-        }
-    ];
+    const { data: instanceList, refresh, run } = useRequest(async () => {
+        const res = await getInstanceList();
+
+        return res.data.list;
+    });
 
     return (
         <>
             <Row>
                 <Col span={2}>
-                    <Button type='primary' style={{ margin: '0 10px' }}>
+                    <Button
+                        type='primary'
+                        style={{ margin: '0 10px' }}
+                        onClick={() => {
+                            setIsEditDrawer(true);
+                            setDrawOpen(true);
+                        }}>
                         New Instance
                     </Button>
                 </Col>
             </Row>
             <Row gutter={12}>
-                {cardList.map((item, index) => {
+                {instanceList?.map((item, index) => {
                     return (
                         <Col span={8} key={index}>
                             <InstanceCard onCardClick={onCardClick} data={item} />
@@ -68,7 +47,15 @@ export default function Console() {
                 })}
             </Row>
 
-            <DetailDrawer data={currentCardData} open={drawerOpen} onClose={() => setDrawOpen(false)} />
+            <DetailDrawer
+                data={currentCardData}
+                isEdit={isEditDrawer}
+                open={drawerOpen}
+                onClose={() => {
+                    setCurrentCardData({});
+                    setDrawOpen(false);
+                }}
+            />
         </>
     );
 }

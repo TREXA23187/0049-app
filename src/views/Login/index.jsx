@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Layout, Input, Form, Button, Divider, message, notification } from 'antd';
+import { Layout, Input, Form, Button, Divider, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { ls } from '@/utils/storage';
-import { encrypt } from '@/utils/crypt';
+// import { encrypt } from '@/utils/crypt';
 import { login } from '@/api/user';
 import { useTranslation } from 'react-i18next';
 import '@/style/view-style/login.less';
@@ -12,27 +12,30 @@ const Login = props => {
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
 
+    const [messageApi, contextHolder] = message.useMessage();
+
     const handleSubmitFinish = async values => {
         setLoading(true);
         let { username, password } = values;
-        const key = '751f621ea5c8f930';
-        const iv = '2624750004598718';
+        // const key = '751f621ea5c8f930';
+        // const iv = '2624750004598718';
         // const res = await login({ username, password: encrypt(password, key, iv) });
         const res = await login({ username, password });
 
         if (res.code === 0) {
             ls.set('user', res.data);
             setLoading(false);
-            message.success(res.msg);
+            messageApi.success(res.msg);
             props.history.push('/index');
         } else {
             setLoading(false);
-            message.error(res.msg);
+            messageApi.error(res.msg);
         }
     };
 
     return (
         <Layout className='login animated fadeIn'>
+            {contextHolder}
             <div className='model'>
                 <div className='login-form'>
                     <h3>{t('后台管理系统')}</h3>
