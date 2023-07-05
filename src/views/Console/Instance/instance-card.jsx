@@ -15,7 +15,7 @@ export default function InstanceCard(props) {
                 title={title}
                 bordered={false}
                 hoverable
-                style={{ margin: '10px 5px', height: '230px', position: 'relative' }}
+                style={{ margin: '10px 5px', height: '230px', position: 'relative', minWidth: '280px' }}
                 onClick={() => onCardClick(data)}>
                 <div>{description}</div>
                 <div>instance id:{instance_id.slice(0, 12)}</div>

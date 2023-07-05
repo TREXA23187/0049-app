@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Dropdown, Menu, Avatar, Button } from 'antd';
+import { Layout, Dropdown, Avatar } from 'antd';
 import {
     GithubOutlined,
     EditOutlined,

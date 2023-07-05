@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload } from 'antd';
+import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { createInstance, operateInstance } from '@/api/instance';
+import { createInstance, operateInstance, removeInstance } from '@/api/instance';
 import { useRequest } from '@umijs/hooks';
 
 export default function DetailDrawer(props) {
@@ -14,10 +14,9 @@ export default function DetailDrawer(props) {
         setStatus(data.status);
     }, [data]);
 
-    const { data: operateRes, loading, run: operate } = useRequest(
+    const { loading, run: operate } = useRequest(
         async data => {
             const res = await operateInstance(data);
-            console.log(res);
 
             return res;
         },
@@ -64,16 +63,12 @@ export default function DetailDrawer(props) {
     const onFinish = async () => {
         const res = await createInstance(form.getFieldsValue());
 
-        if (res.code == 0) {
+        if (res.code === 0) {
             messageApi.success(`instance created successfully`);
         } else {
             messageApi.error(res.msg);
         }
         refreshList();
-    };
-
-    const onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
     };
 
     const normFile = e => {
@@ -86,7 +81,32 @@ export default function DetailDrawer(props) {
     return (
         <>
             {contextHolder}
-            <Drawer title='Intance Detail' placement='right' onClose={onClose} open={open}>
+            <Drawer
+                title='Intance Detail'
+                placement='right'
+                onClose={onClose}
+                open={open}
+                extra={
+                    !isEdit && (
+                        <Space>
+                            <Button
+                                danger
+                                size='small'
+                                onClick={async () => {
+                                    const res = await removeInstance({ id: instance_id });
+                                    if (res.code === 0) {
+                                        messageApi.success('deleted');
+                                        refreshList();
+                                        onClose();
+                                    } else {
+                                        messageApi.error('delete failed');
+                                    }
+                                }}>
+                                Remove
+                            </Button>
+                        </Space>
+                    )
+                }>
                 {isEdit ? (
                     <Form
                         name='basic'
@@ -106,7 +126,9 @@ export default function DetailDrawer(props) {
                         }}
                         form={form}
                         onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
+                        onFinishFailed={errorInfo => {
+                            console.log('Failed:', errorInfo);
+                        }}
                         autoComplete='off'>
                         <Form.Item
                             label='Title'
@@ -193,7 +215,7 @@ export default function DetailDrawer(props) {
                         <Descriptions.Item label='Model'>{model_id}</Descriptions.Item>
                         <Descriptions.Item label='URL'>{url}</Descriptions.Item>
                         <Descriptions.Item label='Status'>
-                            {status == 'running' ? (
+                            {status === 'running' ? (
                                 <div>
                                     <Badge status='success' /> <span>{status}</span>{' '}
                                     <Button
@@ -201,15 +223,17 @@ export default function DetailDrawer(props) {
                                         loading={loading}
                                         onClick={async () => {
                                             const res = await operate({ instance_id, operation: 'stop' });
-                                            setStatus('exited');
-                                            refreshList();
+                                            if (res.code === 0) {
+                                                setStatus('exited');
+                                                refreshList();
+                                            }
                                         }}
                                         size='small'
                                         style={{ marginLeft: '30px' }}>
                                         stop
                                     </Button>
                                 </div>
-                            ) : status == 'exited' ? (
+                            ) : status === 'exited' ? (
                                 <div>
                                     <Badge status='error' /> <span>{status}</span>
                                     <Button
@@ -217,8 +241,10 @@ export default function DetailDrawer(props) {
                                         loading={loading}
                                         onClick={async () => {
                                             const res = await operate({ instance_id, operation: 'start' });
-                                            setStatus('running');
-                                            refreshList();
+                                            if (res.code === 0) {
+                                                setStatus('running');
+                                                refreshList();
+                                            }
                                         }}
                                         size='small'
                                         style={{ marginLeft: '30px' }}>
@@ -229,8 +255,10 @@ export default function DetailDrawer(props) {
                                         loading={loading}
                                         onClick={async () => {
                                             const res = await operate({ instance_id, operation: 'remove' });
-                                            setStatus('not exist');
-                                            refreshList();
+                                            if (res.code === 0) {
+                                                setStatus('not exist');
+                                                refreshList();
+                                            }
                                         }}
                                         size='small'
                                         style={{ marginLeft: '10px' }}>

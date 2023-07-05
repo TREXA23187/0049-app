@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import routes from '@/routes';
 import { Layout, FloatButton, Menu } from 'antd';
 import '@/style/layout.less';
-import { useTranslation } from 'react-i18next';
 import { CloudServerOutlined, BuildOutlined, LayoutOutlined } from '@ant-design/icons';
 
 const { Sider, Content } = Layout;
@@ -25,7 +24,6 @@ const items = [
 ];
 
 export default function ConsoleLayout(props) {
-    const { t } = useTranslation();
     const history = useHistory();
 
     const menuClick = e => {
@@ -39,7 +37,8 @@ export default function ConsoleLayout(props) {
                 <Menu
                     onClick={menuClick}
                     style={{
-                        height: '100%'
+                        height: '100%',
+                        minWidth: '160px'
                     }}
                     defaultSelectedKeys={['1']}
                     defaultOpenKeys={['sub1']}

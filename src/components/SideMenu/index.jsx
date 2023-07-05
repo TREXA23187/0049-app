@@ -5,8 +5,6 @@ import { Link, withRouter } from 'react-router-dom';
 import { ss } from '../../utils/storage';
 import { routesNameMap } from '@/routes/menus';
 import { useTranslation } from 'react-i18next';
-import { HomeOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { type } from 'os-browserify';
 
 const getOpenKeys = (string, collapsed) => {
     let newStr = '',

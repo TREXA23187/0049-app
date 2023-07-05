@@ -38,25 +38,25 @@ const Login = props => {
             {contextHolder}
             <div className='model'>
                 <div className='login-form'>
-                    <h3>{t('后台管理系统')}</h3>
+                    <h3>{t('0049 APP')}</h3>
                     <Divider />
                     <Form onFinish={handleSubmitFinish}>
                         <Form.Item
                             // label="Username"
                             name='username'
-                            rules={[{ required: true, message: t('请输入用户名') }]}>
+                            rules={[{ required: true, message: t('please input username') }]}>
                             <Input
-                                placeholder={t('用户名')}
+                                placeholder={t('username')}
                                 prefix={<UserOutlined className='site-form-item-icon' />}
                             />
                         </Form.Item>
                         <Form.Item
                             // label="Password"
                             name='password'
-                            rules={[{ required: true, message: t('请输入密码') }]}>
+                            rules={[{ required: true, message: t('please input password') }]}>
                             <Input.Password
                                 type='password'
-                                placeholder={t('密码')}
+                                placeholder={t('password')}
                                 prefix={<LockOutlined className='site-form-item-icon' />}
                             />
                         </Form.Item>
@@ -67,7 +67,7 @@ const Login = props => {
                                 className='login-form-button'
                                 // style={{ width: '45%' }}
                                 loading={loading}>
-                                {t('登录')}
+                                {t('Sign in')}
                             </Button>
                             {/* <Button
                                 type='dashed'

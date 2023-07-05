@@ -32,7 +32,7 @@ const AppHeader = props => {
             key: '1',
             label: (
                 <span onClick={() => history.push('/console/instance')}>
-                    <AppstoreOutlined /> {t('控制台')}
+                    <AppstoreOutlined /> {t('Console')}
                 </span>
             )
         },
@@ -42,13 +42,13 @@ const AppHeader = props => {
         {
             key: '2',
             type: 'group',
-            label: t('用户设置'),
+            label: t('User Settings'),
             children: [
                 {
                     key: '2-1',
                     label: (
                         <span>
-                            <EditOutlined /> {t('个人设置')}
+                            <EditOutlined /> {t('Personal')}
                         </span>
                     )
                 },
@@ -56,7 +56,7 @@ const AppHeader = props => {
                     key: '2-2',
                     label: (
                         <span>
-                            <SettingOutlined /> {t('系统设置')}
+                            <SettingOutlined /> {t('System')}
                         </span>
                     ),
                     children: [
@@ -64,7 +64,7 @@ const AppHeader = props => {
                             key: '2-2-1',
                             label: (
                                 <span>
-                                    <SettingOutlined /> {t('语言设置')}
+                                    <SettingOutlined /> {t('Language')}
                                 </span>
                             ),
                             children: [
@@ -89,7 +89,7 @@ const AppHeader = props => {
             key: '3',
             label: (
                 <span onClick={loginOut}>
-                    <LogoutOutlined /> {t('退出登录')}
+                    <LogoutOutlined /> {t('Sign out')}
                 </span>
             )
         }
@@ -98,6 +98,16 @@ const AppHeader = props => {
     return (
         <Header className='header' style={{ height: '50px' }}>
             <div className='left'>
+                {/* <span style={{ marginRight: '25px', cursor: 'pointer' }} onClick={() => history.push('/')}>
+                    <GithubOutlined type='github' style={{ fontSize: '35px', color: '#000' }} />
+                </span> */}
+
+                <GithubOutlined
+                    type='github'
+                    style={{ marginRight: '30px', cursor: 'pointer', fontSize: '32px', color: '#000' }}
+                    onClick={() => history.push('/index')}
+                />
+
                 {location.pathname != '/index' && (
                     <ArrowLeftOutlined
                         onClick={() => {

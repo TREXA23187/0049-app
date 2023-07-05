@@ -15,6 +15,7 @@ export function getLocale() {
 }
 
 export function changeLocale(language) {
+    console.log(language);
     ls.set('lang', language);
     window.location.reload();
 }
