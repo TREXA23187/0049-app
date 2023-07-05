@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import routes from '@/routes';
 import { Layout, FloatButton, Menu } from 'antd';
 import '@/style/layout.less';
@@ -25,6 +25,7 @@ const items = [
 
 export default function ConsoleLayout(props) {
     const history = useHistory();
+    let query = new URLSearchParams(useLocation().search);
 
     const menuClick = e => {
         history.push(e.key);
@@ -33,19 +34,21 @@ export default function ConsoleLayout(props) {
     return (
         <Layout style={{ minHeight: 'calc(100vh - 70px)' }}>
             <FloatButton.BackTop />
-            <Sider width={'15%'} style={{ marginRight: '20px' }}>
-                <Menu
-                    onClick={menuClick}
-                    style={{
-                        height: '100%',
-                        minWidth: '160px'
-                    }}
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
-                    mode='inline'
-                    items={items}
-                />
-            </Sider>
+            {query.get('sider') != 'false' && (
+                <Sider width={'15%'} style={{ marginRight: '20px' }}>
+                    <Menu
+                        onClick={menuClick}
+                        style={{
+                            height: '100%',
+                            minWidth: '160px'
+                        }}
+                        defaultSelectedKeys={['1']}
+                        defaultOpenKeys={['sub1']}
+                        mode='inline'
+                        items={items}
+                    />
+                </Sider>
+            )}
             <Content className='content'>
                 <Switch>
                     {routes.map(item => {
