@@ -4,7 +4,7 @@ import { ls } from '@/utils/storage';
 
 const instance = axios.create({
     baseURL: `http://${BASE_URL}:3000`,
-    timeout: 5000
+    timeout: 30000
 });
 
 instance.interceptors.request.use(

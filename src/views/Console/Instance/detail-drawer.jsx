@@ -1,11 +1,30 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { createInstance } from '@/api/instance';
+import { createInstance, operateInstance } from '@/api/instance';
+import { useRequest } from '@umijs/hooks';
 
 export default function DetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { title, description, id, template_id, model_id, status, url, created_time } = data;
+    const { title, description, instance_id, template_id, model_id, url, created_at } = data;
+
+    const [status, setStatus] = useState(data.status);
+
+    useEffect(() => {
+        setStatus(data.status);
+    }, [data]);
+
+    const { data: operateRes, loading, run: operate } = useRequest(
+        async data => {
+            const res = await operateInstance(data);
+            console.log(res);
+
+            return res;
+        },
+        {
+            manual: true
+        }
+    );
 
     const [fileList, setFileList] = useState([]);
 
@@ -167,24 +186,64 @@ export default function DetailDrawer(props) {
                         </Form.Item>
                     </Form>
                 ) : (
-                    <Descriptions title={title} column={1} layout='vertical'>
+                    <Descriptions title={title} column={1}>
                         <Descriptions.Item label='Description'> {description}</Descriptions.Item>
-                        <Descriptions.Item label='Instance ID:'>{id}</Descriptions.Item>
+                        <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
                         <Descriptions.Item label='Template ID'>{template_id}</Descriptions.Item>
                         <Descriptions.Item label='Model'>{model_id}</Descriptions.Item>
                         <Descriptions.Item label='URL'>{url}</Descriptions.Item>
                         <Descriptions.Item label='Status'>
-                            {status == 1 ? (
+                            {status == 'running' ? (
                                 <div>
-                                    <Badge status='success' /> <span>Running</span>
+                                    <Badge status='success' /> <span>{status}</span>{' '}
+                                    <Button
+                                        danger
+                                        loading={loading}
+                                        onClick={async () => {
+                                            const res = await operate({ instance_id, operation: 'stop' });
+                                            setStatus('exited');
+                                            refreshList();
+                                        }}
+                                        size='small'
+                                        style={{ marginLeft: '30px' }}>
+                                        stop
+                                    </Button>
+                                </div>
+                            ) : status == 'exited' ? (
+                                <div>
+                                    <Badge status='error' /> <span>{status}</span>
+                                    <Button
+                                        type='primary'
+                                        loading={loading}
+                                        onClick={async () => {
+                                            const res = await operate({ instance_id, operation: 'start' });
+                                            setStatus('running');
+                                            refreshList();
+                                        }}
+                                        size='small'
+                                        style={{ marginLeft: '30px' }}>
+                                        start
+                                    </Button>
+                                    <Button
+                                        danger
+                                        loading={loading}
+                                        onClick={async () => {
+                                            const res = await operate({ instance_id, operation: 'remove' });
+                                            setStatus('not exist');
+                                            refreshList();
+                                        }}
+                                        size='small'
+                                        style={{ marginLeft: '10px' }}>
+                                        remove
+                                    </Button>
                                 </div>
                             ) : (
                                 <div>
-                                    <Badge status='error' /> <span>Stopped</span>
+                                    <Badge status='error' /> <span>{status}</span>
                                 </div>
                             )}
                         </Descriptions.Item>
-                        <Descriptions.Item label='created time'>{created_time}</Descriptions.Item>
+                        <Descriptions.Item label='created at'>{new Date(created_at).toString()}</Descriptions.Item>
                     </Descriptions>
                 )}
             </Drawer>
