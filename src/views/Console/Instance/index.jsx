@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Col, Row, Button } from 'antd';
 import InstanceCard from './instance-card';
 import DetailDrawer from './detail-drawer';
-import { getInstanceList } from '@/api/instance';
+import { getInstanceList } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function Console() {

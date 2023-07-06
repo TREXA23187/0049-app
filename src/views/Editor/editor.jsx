@@ -1,9 +1,7 @@
 import React, { useState, useRef } from 'react';
-import ReactDOMServer from 'react-dom/server';
 import { Layout, theme, message, Button, Tabs } from 'antd';
 import {
     RollbackOutlined,
-    ExportOutlined,
     ImportOutlined,
     VerticalAlignTopOutlined,
     VerticalAlignBottomOutlined,
@@ -20,6 +18,7 @@ import useMenuDragger from './useMenuDragger';
 import { useFocus } from './useFocus';
 import { useBlockDragger } from './useBlockDragger';
 import { useCommand } from './useCommand';
+import { createTemplate } from '@/api/console';
 import ExportModal from '@/components/editor/ExportModal';
 import MenuDropdown from '@/components/editor/MenuDropdown';
 import EditorOperator from '@/components/editor/EditorOperator';
@@ -200,45 +199,17 @@ export default function EditorApp(props) {
             label: 'Save',
             icon: <SaveOutlined />,
             handler: () => {
-                const element = (() => {
-                    return (
-                        <div
-                            style={{
-                                ...containerStyles,
-                                position: 'relative'
-                            }}
-                            ref={containerRef}
-                            onMouseDown={containerMouseDown}>
-                            {data.blocks.map((block, index) => {
-                                return (
-                                    <EditorBlock
-                                        block={block}
-                                        key={index}
-                                        config={config}
-                                        isPreview={true}
-                                        updateBlock={updateBlock}
-                                        onMouseDown={e => blockMouseDown(e, block)}
-                                        globalData={globalData}
-                                        updateGlobalData={updateGlobalData}
-                                    />
-                                );
-                            })}
-                        </div>
-                    );
-                })();
-
-                const htmlString = ReactDOMServer.renderToStaticMarkup(element);
-                console.log(htmlString);
-            }
-        },
-        {
-            label: 'Export',
-            icon: <ExportOutlined />,
-            handler: () => {
                 setExportModalOption({
                     title: 'Export JSON',
                     content: JSON.stringify(data),
-                    isExport: true
+                    isExport: true,
+                    async callback(title, content) {
+                        const res = await createTemplate({ title, content });
+                        if (res.code == 0) {
+                            messageApi.success(res.msg);
+                            setIsExportModalOpen(false);
+                        }
+                    }
                 });
                 setIsExportModalOpen(true);
             }
