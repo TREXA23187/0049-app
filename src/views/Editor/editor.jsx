@@ -341,7 +341,7 @@ export default function EditorApp(props) {
     ) : (
         <Layout
             style={{
-                height: '90vh'
+                height: '86vh'
             }}
             hasSider>
             <Sider theme='light' width={'20%'}>
@@ -402,14 +402,13 @@ export default function EditorApp(props) {
                 <Content
                     style={{
                         margin: '20px 16px',
-                        position: 'relative',
-                        height: '500px'
+                        position: 'relative'
+                        // height: '500px'
                     }}>
                     <div
                         style={{
-                            padding: 14,
-                            background: colorBgContainer,
-                            minHeight: '100%'
+                            // padding: 14,
+                            background: colorBgContainer
                         }}
                         ref={containerRef}
                         onMouseDown={containerMouseDown}>
