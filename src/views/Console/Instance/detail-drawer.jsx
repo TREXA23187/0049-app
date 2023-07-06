@@ -95,11 +95,11 @@ export default function DetailDrawer(props) {
                                 onClick={async () => {
                                     const res = await removeInstance({ id: instance_id });
                                     if (res.code === 0) {
-                                        messageApi.success('deleted');
+                                        messageApi.success('removed');
                                         refreshList();
                                         onClose();
                                     } else {
-                                        messageApi.error('delete failed');
+                                        messageApi.error('remove failed');
                                     }
                                 }}>
                                 Remove

@@ -22,3 +22,6 @@ export function createTemplate(data) {
 export function getTemplateList() {
     return get('api/v1/console/template/list');
 }
+export function removeTemplate(params) {
+    return del('api/v1/console/template', params);
+}
