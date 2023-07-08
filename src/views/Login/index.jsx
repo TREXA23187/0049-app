@@ -20,6 +20,7 @@ const Login = props => {
         // const key = '751f621ea5c8f930';
         // const iv = '2624750004598718';
         // const res = await login({ username, password: encrypt(password, key, iv) });
+
         const res = await login({ username, password });
 
         if (res.code === 0) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 import routes from '@/routes';
 import { Layout, FloatButton, Menu } from 'antd';
@@ -25,7 +25,11 @@ const items = [
 
 export default function ConsoleLayout(props) {
     const history = useHistory();
-    let query = new URLSearchParams(useLocation().search);
+    const location = useLocation();
+
+    let query = new URLSearchParams(location.search);
+
+    const [currentMenu, setCurrentMenu] = useState(location.pathname);
 
     const menuClick = e => {
         history.push(e.key);
@@ -46,6 +50,7 @@ export default function ConsoleLayout(props) {
                         defaultOpenKeys={['sub1']}
                         mode='inline'
                         items={items}
+                        selectedKeys={[currentMenu]}
                     />
                 </Sider>
             )}

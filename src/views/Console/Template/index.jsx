@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Col, Row, Button, Table, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { getTemplateList } from '@/api/console';
@@ -11,7 +11,7 @@ export default function Template() {
     const history = useHistory();
     const [messageApi, contextHolder] = message.useMessage();
 
-    const { data: templateList, refresh, run } = useRequest(async () => {
+    const { data: templateList, refresh } = useRequest(async () => {
         const res = await getTemplateList();
 
         return res.data?.list;
@@ -81,13 +81,7 @@ export default function Template() {
                     </Button>
                 </Col>
             </Row>
-            <Table
-                columns={columns}
-                dataSource={templateList}
-                pagination={{ defaultPageSize: 5 }}
-                rowKey='id'
-                style={{ maxHeight: '100px' }}
-            />
+            <Table columns={columns} dataSource={templateList} pagination={{ defaultPageSize: 5 }} rowKey='id' />
         </div>
     );
 }

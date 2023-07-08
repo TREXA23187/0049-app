@@ -4,26 +4,9 @@ import { UploadOutlined } from '@ant-design/icons';
 import { createInstance, operateInstance, removeInstance } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
-export default function DetailDrawer(props) {
+export default function ModelDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
     const { title, description, instance_id, template_id, model_id, url, created_at } = data;
-
-    const [status, setStatus] = useState(data.status);
-
-    useEffect(() => {
-        setStatus(data.status);
-    }, [data]);
-
-    const { loading, run: operate } = useRequest(
-        async data => {
-            const res = await operateInstance(data);
-
-            return res;
-        },
-        {
-            manual: true
-        }
-    );
 
     const [fileList, setFileList] = useState([]);
 
@@ -31,16 +14,9 @@ export default function DetailDrawer(props) {
     const [messageApi, contextHolder] = message.useMessage();
 
     const fileUploadProps = {
-        action: 'http://localhost:3000/api/v1/file/upload',
+        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
         headers: {
             authorization: 'authorization-text'
-        },
-        beforeUpload: file => {
-            const isText = file.type.startsWith('text');
-            if (!isText) {
-                messageApi.error(`${file.name} is not a text file`);
-            }
-            return isText || Upload.LIST_IGNORE;
         },
         onChange(info) {
             if (info.file.status === 'done') {
@@ -53,7 +29,7 @@ export default function DetailDrawer(props) {
 
             // 1. Limit the number of uploaded files
             // Only to show two recent uploaded files, and old ones will be replaced by the new
-            // newFileList = newFileList.slice(-2);
+            newFileList = newFileList.slice(-2);
 
             // 2. Read from response and show file link
             newFileList = newFileList.map(file => {
@@ -68,22 +44,14 @@ export default function DetailDrawer(props) {
     };
 
     const onFinish = async () => {
-        const values = form.getFieldsValue();
-        values.data_file_names = values.data_file?.map(file => {
-            return file.name;
-        });
-
-        delete values.data_file;
-
-        const res = await createInstance(values);
+        const res = await createInstance(form.getFieldsValue());
 
         if (res.code === 0) {
             messageApi.success(`instance created successfully`);
-            refreshList();
-            onClose();
         } else {
             messageApi.error(res.msg);
         }
+        refreshList();
     };
 
     const normFile = e => {

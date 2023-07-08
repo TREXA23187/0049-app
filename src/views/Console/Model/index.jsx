@@ -1,14 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { Layout, Tag, Table, Input, Button, Space, message } from 'antd';
-import Highlighter from 'react-highlight-words';
-import { SearchOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Table, Button, Space, message, Row, Col } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
-import { ls } from '@/utils/storage';
 
 const modelList = [
     {
-        model: '123',
+        name: '123',
         key: '123'
     }
 ];
@@ -16,31 +13,22 @@ const modelList = [
 export default function Model() {
     const { t } = useTranslation();
 
+    const [messageApi, contextHolder] = message.useMessage();
+
     const [visible, setVisible] = useState(false);
     const [userData, setUserData] = useState({});
     const [modalType, setModalType] = useState('add'); // add || edit
 
     const columns = [
         {
-            title: t('Model'),
-            dataIndex: 'model',
-            key: 'model'
+            title: t('Name'),
+            dataIndex: 'name',
+            key: 'name'
         },
         {
-            title: t('地址'),
-            dataIndex: 'address',
-            key: 'address',
-            render(value) {
-                return value || '-';
-            }
-        },
-        {
-            title: t('电话'),
-            dataIndex: 'tel',
-            key: 'tel',
-            render(value) {
-                return value || '-';
-            }
+            title: t('Content'),
+            dataIndex: 'content',
+            key: 'content'
         },
         {
             title: t('操作'),
@@ -48,36 +36,45 @@ export default function Model() {
                 return (
                     <div>
                         <Button
-                            type='text'
-                            style={{ color: 'blue' }}
+                            type='link'
                             onClick={() => {
-                                setUserData(rol);
-                                setModalType('edit');
-                            }}>
-                            {t('编辑')}
+                                // history.push(`/console/template/editor?sider=false&data=${rol.content}`);
+                            }}
+                            disabled={rol.title === 'default'}>
+                            {t('Edit')}
                         </Button>
-                        <Button type='text' danger>
-                            {t('禁用')}
-                        </Button>
-                        {/* <Button
+                        <Button
                             type='text'
                             danger
                             onClick={async () => {
-                                const res = await deleteUser(rol.id);
-                                message.success(res.message);
-                                refresh();
+                                // const res = await removeTemplate({ id: rol.id });
+                                // if (res.code === 0) {
+                                //     messageApi.success('removed');
+                                //     refresh();
+                                // } else {
+                                //     messageApi.error('remove failed');
+                                // }
                             }}
-                            disabled={disabled}>
-                            {t('删除')}
-                        </Button> */}
+                            disabled={rol.title === 'default'}>
+                            {t('Remove')}
+                        </Button>
                     </div>
                 );
             }
         }
     ];
+
     return (
         <div>
-            <Table columns={columns} dataSource={modelList} pagination={{ defaultPageSize: 5 }} rowKey='id' />
+            {contextHolder}
+            <Row>
+                <Col span={2}>
+                    <Button type='primary' style={{ margin: '0 10px' }} onClick={() => {}}>
+                        New Model
+                    </Button>
+                </Col>
+            </Row>
+            <Table columns={columns} dataSource={modelList} pagination={{ defaultPageSize: 5 }} />
         </div>
     );
 }
