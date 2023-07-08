@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { createInstance, operateInstance, removeInstance } from '@/api/console';
+import { createInstance, operateInstance, removeInstance, getTemplateList, getModelList } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function DetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { title, description, instance_id, template_id, model_id, url, created_at } = data;
+    const { title, description, instance_id, template, model, url, created_at } = data;
 
     const [status, setStatus] = useState(data.status);
 
@@ -24,6 +24,18 @@ export default function DetailDrawer(props) {
             manual: true
         }
     );
+
+    const { data: templateList } = useRequest(async data => {
+        const res = await getTemplateList();
+
+        return res.data?.list || [];
+    });
+
+    const { data: modelList } = useRequest(async () => {
+        const res = await getModelList();
+
+        return res.data?.list || [];
+    });
 
     const [fileList, setFileList] = useState([]);
 
@@ -170,31 +182,23 @@ export default function DetailDrawer(props) {
 
                         <Form.Item label='Template' name='template'>
                             <Select
-                                options={[
-                                    {
-                                        value: 'default',
-                                        label: 'default'
-                                    },
-                                    {
-                                        value: 'lucy',
-                                        label: 'Lucy'
-                                    }
-                                ]}
+                                options={templateList.map(item => {
+                                    return {
+                                        value: item.title,
+                                        label: item.title
+                                    };
+                                })}
                             />
                         </Form.Item>
 
                         <Form.Item label='Model' name='model'>
                             <Select
-                                options={[
-                                    {
-                                        value: 'dt',
-                                        label: 'desicion tree'
-                                    },
-                                    {
-                                        value: 'rf',
-                                        label: 'randam forest'
-                                    }
-                                ]}
+                                options={modelList.map(item => {
+                                    return {
+                                        value: item.name,
+                                        label: item.name
+                                    };
+                                })}
                             />
                         </Form.Item>
 
@@ -226,8 +230,8 @@ export default function DetailDrawer(props) {
                     <Descriptions title={title} column={1}>
                         <Descriptions.Item label='Description'> {description}</Descriptions.Item>
                         <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
-                        <Descriptions.Item label='Template ID'>{template_id}</Descriptions.Item>
-                        <Descriptions.Item label='Model'>{model_id}</Descriptions.Item>
+                        <Descriptions.Item label='Template'>{template}</Descriptions.Item>
+                        <Descriptions.Item label='Model'>{model}</Descriptions.Item>
                         <Descriptions.Item label='URL'>{url}</Descriptions.Item>
                         <Descriptions.Item label='Status'>
                             {status === 'running' ? (

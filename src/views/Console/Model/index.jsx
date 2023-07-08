@@ -2,22 +2,24 @@ import React, { useState, useRef } from 'react';
 import { Table, Button, Space, message, Row, Col } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
-
-const modelList = [
-    {
-        name: '123',
-        key: '123'
-    }
-];
+import { getModelList } from '@/api/console';
+import ModelDetailDrawer from './model-detail-drawer';
+import { DownloadOutlined } from '@ant-design/icons';
 
 export default function Model() {
     const { t } = useTranslation();
 
     const [messageApi, contextHolder] = message.useMessage();
 
-    const [visible, setVisible] = useState(false);
-    const [userData, setUserData] = useState({});
-    const [modalType, setModalType] = useState('add'); // add || edit
+    const [drawerOpen, setDrawOpen] = useState(false);
+    const [currentModelData, setCurrentModelData] = useState({});
+    const [isEditDrawer, setIsEditDrawer] = useState(false);
+
+    const { data: modelList, refresh } = useRequest(async () => {
+        const res = await getModelList();
+
+        return res.data?.list;
+    });
 
     const columns = [
         {
@@ -26,13 +28,40 @@ export default function Model() {
             key: 'name'
         },
         {
-            title: t('Content'),
-            dataIndex: 'content',
-            key: 'content'
+            title: t('Code Flie'),
+            dataIndex: 'file_path',
+            key: 'file_path',
+            render(rol, record) {
+                return rol ? (
+                    <div
+                        style={{
+                            position: 'relative',
+                            display: 'flex',
+                            alignItems: 'center'
+                        }}>
+                        {rol}
+                        {!record.is_default && (
+                            <DownloadOutlined
+                                style={{ position: 'absolute', right: 2, fontSize: 16, cursor: 'pointer' }}
+                            />
+                        )}
+                    </div>
+                ) : (
+                    '-'
+                );
+            }
         },
         {
-            title: t('操作'),
+            title: t('Github Link'),
+            dataIndex: 'github_link',
+            key: 'github_link',
             render(rol) {
+                return rol || '-';
+            }
+        },
+        {
+            title: t('Action'),
+            render(rol, record) {
                 return (
                     <div>
                         <Button
@@ -40,7 +69,7 @@ export default function Model() {
                             onClick={() => {
                                 // history.push(`/console/template/editor?sider=false&data=${rol.content}`);
                             }}
-                            disabled={rol.title === 'default'}>
+                            disabled={record.is_default}>
                             {t('Edit')}
                         </Button>
                         <Button
@@ -55,7 +84,7 @@ export default function Model() {
                                 //     messageApi.error('remove failed');
                                 // }
                             }}
-                            disabled={rol.title === 'default'}>
+                            disabled={record.is_default}>
                             {t('Remove')}
                         </Button>
                     </div>
@@ -74,7 +103,17 @@ export default function Model() {
                     </Button>
                 </Col>
             </Row>
-            <Table columns={columns} dataSource={modelList} pagination={{ defaultPageSize: 5 }} />
+            <Table columns={columns} dataSource={modelList} pagination={{ defaultPageSize: 5 }} rowKey='id' />
+            <ModelDetailDrawer
+                data={currentModelData}
+                open={drawerOpen}
+                isEdit={isEditDrawer}
+                refreshList={refresh}
+                onClose={() => {
+                    setCurrentModelData({});
+                    setDrawOpen(false);
+                }}
+            />
         </div>
     );
 }

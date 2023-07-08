@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { createInstance, operateInstance, removeInstance } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function ModelDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { title, description, instance_id, template_id, model_id, url, created_at } = data;
+    const { title } = data;
 
     const [fileList, setFileList] = useState([]);
 
@@ -44,14 +43,13 @@ export default function ModelDetailDrawer(props) {
     };
 
     const onFinish = async () => {
-        const res = await createInstance(form.getFieldsValue());
-
-        if (res.code === 0) {
-            messageApi.success(`instance created successfully`);
-        } else {
-            messageApi.error(res.msg);
-        }
-        refreshList();
+        // const res = await createInstance(form.getFieldsValue());
+        // if (res.code === 0) {
+        //     messageApi.success(`instance created successfully`);
+        // } else {
+        //     messageApi.error(res.msg);
+        // }
+        // refreshList();
     };
 
     const normFile = e => {
@@ -76,14 +74,14 @@ export default function ModelDetailDrawer(props) {
                                 danger
                                 size='small'
                                 onClick={async () => {
-                                    const res = await removeInstance({ id: instance_id });
-                                    if (res.code === 0) {
-                                        messageApi.success('removed');
-                                        refreshList();
-                                        onClose();
-                                    } else {
-                                        messageApi.error('remove failed');
-                                    }
+                                    // const res = await removeInstance({ id: instance_id });
+                                    // if (res.code === 0) {
+                                    //     messageApi.success('removed');
+                                    //     refreshList();
+                                    //     onClose();
+                                    // } else {
+                                    //     messageApi.error('remove failed');
+                                    // }
                                 }}>
                                 Remove
                             </Button>
@@ -192,69 +190,7 @@ export default function ModelDetailDrawer(props) {
                     </Form>
                 ) : (
                     <Descriptions title={title} column={1}>
-                        <Descriptions.Item label='Description'> {description}</Descriptions.Item>
-                        <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
-                        <Descriptions.Item label='Template ID'>{template_id}</Descriptions.Item>
-                        <Descriptions.Item label='Model'>{model_id}</Descriptions.Item>
-                        <Descriptions.Item label='URL'>{url}</Descriptions.Item>
-                        <Descriptions.Item label='Status'>
-                            {status === 'running' ? (
-                                <div>
-                                    <Badge status='success' /> <span>{status}</span>{' '}
-                                    <Button
-                                        danger
-                                        loading={loading}
-                                        onClick={async () => {
-                                            const res = await operate({ instance_id, operation: 'stop' });
-                                            if (res.code === 0) {
-                                                setStatus('exited');
-                                                refreshList();
-                                            }
-                                        }}
-                                        size='small'
-                                        style={{ marginLeft: '30px' }}>
-                                        stop
-                                    </Button>
-                                </div>
-                            ) : status === 'exited' ? (
-                                <div>
-                                    <Badge status='error' /> <span>{status}</span>
-                                    <Button
-                                        type='primary'
-                                        loading={loading}
-                                        onClick={async () => {
-                                            const res = await operate({ instance_id, operation: 'start' });
-                                            if (res.code === 0) {
-                                                setStatus('running');
-                                                refreshList();
-                                            }
-                                        }}
-                                        size='small'
-                                        style={{ marginLeft: '30px' }}>
-                                        start
-                                    </Button>
-                                    <Button
-                                        danger
-                                        loading={loading}
-                                        onClick={async () => {
-                                            const res = await operate({ instance_id, operation: 'remove' });
-                                            if (res.code === 0) {
-                                                setStatus('not exist');
-                                                refreshList();
-                                            }
-                                        }}
-                                        size='small'
-                                        style={{ marginLeft: '10px' }}>
-                                        remove
-                                    </Button>
-                                </div>
-                            ) : (
-                                <div>
-                                    <Badge status='error' /> <span>{status}</span>
-                                </div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item label='created at'>{new Date(created_at).toString()}</Descriptions.Item>
+                        <Descriptions.Item label='Description'> {123}</Descriptions.Item>
                     </Descriptions>
                 )}
             </Drawer>

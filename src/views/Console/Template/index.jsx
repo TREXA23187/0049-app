@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { getTemplateList } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
-import { removeTemplate } from '../../../api/console';
+import { removeTemplate } from '@/api/console';
 
 export default function Template() {
     const { t } = useTranslation();
@@ -32,7 +32,7 @@ export default function Template() {
             }
         },
         {
-            title: t('操作'),
+            title: t('Action'),
             render(rol) {
                 return (
                     <div>

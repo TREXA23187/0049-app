@@ -25,3 +25,7 @@ export function getTemplateList() {
 export function removeTemplate(params) {
     return del('api/v1/console/template', params);
 }
+
+export function getModelList() {
+    return get('api/v1/console/model/list');
+}
