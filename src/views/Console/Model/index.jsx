@@ -61,7 +61,9 @@ export default function Model() {
                         <Button
                             type='link'
                             onClick={() => {
-                                // history.push(`/console/template/editor?sider=false&data=${rol.content}`);
+                                setCurrentModelData(record);
+                                setDrawOpen(true);
+                                setIsEditDrawer(true);
                             }}
                             disabled={record.is_default}>
                             {t('Edit')}
@@ -96,7 +98,7 @@ export default function Model() {
                         type='primary'
                         style={{ margin: '0 10px' }}
                         onClick={() => {
-                            setIsEditDrawer(true);
+                            setIsEditDrawer(false);
                             setDrawOpen(true);
                         }}>
                         New Model

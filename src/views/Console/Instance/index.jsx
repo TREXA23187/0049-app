@@ -30,6 +30,7 @@ export default function Console() {
                         type='primary'
                         style={{ margin: '0 10px' }}
                         onClick={() => {
+                            setCurrentCardData({});
                             setIsEditDrawer(true);
                             setDrawOpen(true);
                         }}>

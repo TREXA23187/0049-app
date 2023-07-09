@@ -5,7 +5,8 @@ import { UploadOutlined } from '@ant-design/icons';
 
 export default function ModelDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { title } = data;
+    console.log(data);
+    const { is_github } = data;
 
     const [fileList, setFileList] = useState([]);
     const [showGithub, setShowGithub] = useState(false);
@@ -70,85 +71,77 @@ export default function ModelDetailDrawer(props) {
     return (
         <>
             {contextHolder}
-            <Drawer title='Model Detail' placement='right' onClose={onClose} open={open}>
-                {isEdit ? (
-                    <Form
-                        name='basic'
-                        style={{
-                            maxWidth: '85%'
-                        }}
-                        labelCol={{
-                            span: 8
-                        }}
-                        wrapperCol={{
-                            span: 16
-                        }}
-                        initialValues={{
-                            template: 'default',
-                            model: 'dt',
-                            ...data
-                        }}
-                        form={form}
-                        onFinish={onFinish}
-                        onFinishFailed={errorInfo => {
-                            console.log('Failed:', errorInfo);
-                        }}
-                        autoComplete='off'>
+            <Drawer title={isEdit ? 'Edit Model' : 'Create Model'} placement='right' onClose={onClose} open={open}>
+                <Form
+                    name='basic'
+                    style={{
+                        maxWidth: '85%'
+                    }}
+                    labelCol={{
+                        span: 8
+                    }}
+                    wrapperCol={{
+                        span: 16
+                    }}
+                    initialValues={{
+                        ...data
+                    }}
+                    form={form}
+                    onFinish={onFinish}
+                    onFinishFailed={errorInfo => {
+                        console.log('Failed:', errorInfo);
+                    }}
+                    autoComplete='off'>
+                    <Form.Item
+                        label='Name'
+                        name='name'
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input name'
+                            }
+                        ]}>
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label='Model File'
+                        name='model_file'
+                        valuePropName='fileList'
+                        getValueFromEvent={normFile}>
+                        <Upload {...fileUploadProps}>
+                            {fileList?.length < 1 && <Button icon={<UploadOutlined />}>Click to Upload</Button>}
+                        </Upload>
+                    </Form.Item>
+
+                    <Form.Item label='Github' valuePropName='is_github'>
+                        <Switch onChange={setShowGithub} />
+                    </Form.Item>
+
+                    {showGithub && (
                         <Form.Item
-                            label='Name'
-                            name='name'
+                            label='Github Link'
+                            name='github_link'
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input name'
+                                    message: 'Please input github link'
                                 }
                             ]}>
                             <Input />
                         </Form.Item>
+                    )}
 
-                        <Form.Item
-                            label='Model File'
-                            name='model_file'
-                            valuePropName='fileList'
-                            getValueFromEvent={normFile}>
-                            <Upload {...fileUploadProps}>
-                                {fileList?.length < 1 && <Button icon={<UploadOutlined />}>Click to Upload</Button>}
-                            </Upload>
-                        </Form.Item>
-
-                        <Form.Item label='Github' valuePropName='checked'>
-                            <Switch onChange={setShowGithub} />
-                        </Form.Item>
-
-                        {showGithub && (
-                            <Form.Item
-                                label='Github Link'
-                                name='github_link'
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input github link'
-                                    }
-                                ]}>
-                                <Input />
-                            </Form.Item>
-                        )}
-
-                        <Form.Item
-                            wrapperCol={{
-                                offset: 8,
-                                span: 16
-                            }}>
-                            <Button type='primary' htmlType='submit'>
-                                Submit
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                ) : (
-                    <Descriptions title={title} column={1}>
-                        <Descriptions.Item label='Description'> {123}</Descriptions.Item>
-                    </Descriptions>
-                )}
+                    <Form.Item
+                        wrapperCol={{
+                            offset: 8,
+                            span: 16
+                        }}>
+                        <Button type='primary' htmlType='submit'>
+                            {isEdit ? 'Update' : 'Submit'}
+                        </Button>
+                    </Form.Item>
+                </Form>
             </Drawer>
         </>
     );
