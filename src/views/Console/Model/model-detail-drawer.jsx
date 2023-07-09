@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Drawer, Descriptions, Badge, Button, Switch, Form, Input, message, Upload, Space } from 'antd';
+import React, { useState } from 'react';
+import { Drawer, Descriptions, Button, Switch, Form, Input, message, Upload } from 'antd';
+import { createModel } from '@/api/console';
 import { UploadOutlined } from '@ant-design/icons';
-import { useRequest } from '@umijs/hooks';
 
 export default function ModelDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
@@ -45,13 +45,19 @@ export default function ModelDetailDrawer(props) {
 
     const onFinish = async () => {
         console.log(form.getFieldsValue());
-        // const res = await createInstance(form.getFieldsValue());
-        // if (res.code === 0) {
-        //     messageApi.success(`instance created successfully`);
-        // } else {
-        //     messageApi.error(res.msg);
-        // }
-        // refreshList();
+        const values = {
+            ...form.getFieldsValue(),
+            is_github: showGithub
+        };
+
+        const res = await createModel(values);
+        if (res.code === 0) {
+            messageApi.success('model created successfully');
+        } else {
+            messageApi.error(res.msg);
+        }
+        refreshList();
+        onClose();
     };
 
     const normFile = e => {
@@ -115,7 +121,15 @@ export default function ModelDetailDrawer(props) {
                         </Form.Item>
 
                         {showGithub && (
-                            <Form.Item label='Github Link' name='github_link'>
+                            <Form.Item
+                                label='Github Link'
+                                name='github_link'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input github link'
+                                    }
+                                ]}>
                                 <Input />
                             </Form.Item>
                         )}

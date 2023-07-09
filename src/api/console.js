@@ -26,6 +26,9 @@ export function removeTemplate(params) {
     return del('api/v1/console/template', params);
 }
 
+export function createModel(data) {
+    return post('api/v1/console/model', data);
+}
 export function getModelList() {
     return get('api/v1/console/model/list');
 }

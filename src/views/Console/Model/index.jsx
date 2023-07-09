@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { Table, Button, Space, message, Row, Col } from 'antd';
+import React, { useState } from 'react';
+import { Table, Button, message, Row, Col } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
 import { getModelList } from '@/api/console';
 import ModelDetailDrawer from './model-detail-drawer';
-import { DownloadOutlined } from '@ant-design/icons';
 
 export default function Model() {
     const { t } = useTranslation();
@@ -32,7 +31,7 @@ export default function Model() {
             dataIndex: 'file_path',
             key: 'file_path',
             render(rol, record) {
-                return rol ? (
+                return rol && !record.is_default ? (
                     <div
                         style={{
                             position: 'relative',
@@ -40,11 +39,6 @@ export default function Model() {
                             alignItems: 'center'
                         }}>
                         {rol}
-                        {!record.is_default && (
-                            <DownloadOutlined
-                                style={{ position: 'absolute', right: 2, fontSize: 16, cursor: 'pointer' }}
-                            />
-                        )}
                     </div>
                 ) : (
                     '-'
