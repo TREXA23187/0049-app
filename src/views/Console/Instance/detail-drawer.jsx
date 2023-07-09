@@ -44,7 +44,7 @@ export default function DetailDrawer(props) {
     const [messageApi, contextHolder] = message.useMessage();
 
     const fileUploadProps = {
-        action: 'http://localhost:3000/api/v1/file/upload',
+        action: 'http://localhost:3000/api/v1/file/upload?type=data',
         headers: {
             authorization: 'authorization-text'
         },

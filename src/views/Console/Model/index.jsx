@@ -3,6 +3,7 @@ import { Table, Button, message, Row, Col } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
 import { getModelList } from '@/api/console';
+import { downloadFile } from '@/api/file';
 import ModelDetailDrawer from './model-detail-drawer';
 
 export default function Model() {
@@ -27,18 +28,42 @@ export default function Model() {
             key: 'name'
         },
         {
-            title: t('Code Flie'),
-            dataIndex: 'file_path',
-            key: 'file_path',
+            title: t('Model Flie'),
+            dataIndex: 'model_file_name',
+            key: 'model_file_name',
             render(rol, record) {
                 return rol && !record.is_default ? (
-                    <div
-                        style={{
-                            position: 'relative',
-                            display: 'flex',
-                            alignItems: 'center'
-                        }}>
-                        {rol}
+                    <div>
+                        <Button
+                            type='link'
+                            onClick={async () => {
+                                const { model_file_name, model_file_path } = record;
+                                const res = await downloadFile({
+                                    file_name: model_file_name,
+                                    file_path: model_file_path
+                                });
+
+                                if (res.code === -1) {
+                                    messageApi.error(res.msg);
+                                } else {
+                                    const blob = new Blob([res], {
+                                        type: 'application/octet-stream'
+                                    });
+
+                                    const link = document.createElement('a');
+
+                                    link.download = model_file_name;
+
+                                    link.href = URL.createObjectURL(blob);
+                                    document.body.appendChild(link);
+                                    link.click();
+
+                                    URL.revokeObjectURL(link.href);
+                                    document.body.removeChild(link);
+                                }
+                            }}>
+                            {rol}
+                        </Button>
                     </div>
                 ) : (
                     '-'
