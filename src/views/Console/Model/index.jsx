@@ -98,7 +98,13 @@ export default function Model() {
             {contextHolder}
             <Row>
                 <Col span={2}>
-                    <Button type='primary' style={{ margin: '0 10px' }} onClick={() => {}}>
+                    <Button
+                        type='primary'
+                        style={{ margin: '0 10px' }}
+                        onClick={() => {
+                            setIsEditDrawer(true);
+                            setDrawOpen(true);
+                        }}>
                         New Model
                     </Button>
                 </Col>

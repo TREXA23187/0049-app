@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload, Space } from 'antd';
+import { Drawer, Descriptions, Badge, Button, Switch, Form, Input, message, Upload, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useRequest } from '@umijs/hooks';
 
@@ -8,6 +8,7 @@ export default function ModelDetailDrawer(props) {
     const { title } = data;
 
     const [fileList, setFileList] = useState([]);
+    const [showGithub, setShowGithub] = useState(false);
 
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
@@ -43,6 +44,7 @@ export default function ModelDetailDrawer(props) {
     };
 
     const onFinish = async () => {
+        console.log(form.getFieldsValue());
         // const res = await createInstance(form.getFieldsValue());
         // if (res.code === 0) {
         //     messageApi.success(`instance created successfully`);
@@ -62,32 +64,7 @@ export default function ModelDetailDrawer(props) {
     return (
         <>
             {contextHolder}
-            <Drawer
-                title='Intance Detail'
-                placement='right'
-                onClose={onClose}
-                open={open}
-                extra={
-                    !isEdit && (
-                        <Space>
-                            <Button
-                                danger
-                                size='small'
-                                onClick={async () => {
-                                    // const res = await removeInstance({ id: instance_id });
-                                    // if (res.code === 0) {
-                                    //     messageApi.success('removed');
-                                    //     refreshList();
-                                    //     onClose();
-                                    // } else {
-                                    //     messageApi.error('remove failed');
-                                    // }
-                                }}>
-                                Remove
-                            </Button>
-                        </Space>
-                    )
-                }>
+            <Drawer title='Model Detail' placement='right' onClose={onClose} open={open}>
                 {isEdit ? (
                     <Form
                         name='basic'
@@ -112,71 +89,36 @@ export default function ModelDetailDrawer(props) {
                         }}
                         autoComplete='off'>
                         <Form.Item
-                            label='Title'
-                            name='title'
+                            label='Name'
+                            name='name'
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input title'
-                                }
-                            ]}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label='Description'
-                            name='description'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input description'
+                                    message: 'Please input name'
                                 }
                             ]}>
                             <Input />
                         </Form.Item>
 
-                        <Form.Item label='Template' name='template'>
-                            <Select
-                                options={[
-                                    {
-                                        value: 'default',
-                                        label: 'default'
-                                    },
-                                    {
-                                        value: 'lucy',
-                                        label: 'Lucy'
-                                    }
-                                ]}
-                            />
-                        </Form.Item>
-
-                        <Form.Item label='Model' name='model'>
-                            <Select
-                                options={[
-                                    {
-                                        value: 'dt',
-                                        label: 'desicion tree'
-                                    },
-                                    {
-                                        value: 'rf',
-                                        label: 'randam forest'
-                                    }
-                                ]}
-                            />
-                        </Form.Item>
-
-                        <Form.Item label='URL' name='url'>
-                            <Input />
-                        </Form.Item>
-
                         <Form.Item
-                            label='Data File'
-                            name='data_file'
+                            label='Model File'
+                            name='model_file'
                             valuePropName='fileList'
                             getValueFromEvent={normFile}>
                             <Upload {...fileUploadProps}>
                                 {fileList?.length < 1 && <Button icon={<UploadOutlined />}>Click to Upload</Button>}
                             </Upload>
                         </Form.Item>
+
+                        <Form.Item label='Github' valuePropName='checked'>
+                            <Switch onChange={setShowGithub} />
+                        </Form.Item>
+
+                        {showGithub && (
+                            <Form.Item label='Github Link' name='github_link'>
+                                <Input />
+                            </Form.Item>
+                        )}
 
                         <Form.Item
                             wrapperCol={{

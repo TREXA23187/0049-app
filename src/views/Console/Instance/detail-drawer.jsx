@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { createInstance, operateInstance, removeInstance, getTemplateList, getModelList } from '@/api/console';
+import { downloadFile } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
 
 export default function DetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { title, description, instance_id, template, model, url, created_at } = data;
+    const { title, description, instance_id, template, model, url, created_at, data_file_name, data_file_path } = data;
 
     const [status, setStatus] = useState(data.status);
 
@@ -81,9 +82,10 @@ export default function DetailDrawer(props) {
 
     const onFinish = async () => {
         const values = form.getFieldsValue();
-        values.data_file_names = values.data_file?.map(file => {
-            return file.name;
-        });
+        values.data_file_names =
+            values.data_file?.map(file => {
+                return file.name;
+            }) || [];
 
         delete values.data_file;
 
@@ -291,6 +293,38 @@ export default function DetailDrawer(props) {
                             )}
                         </Descriptions.Item>
                         <Descriptions.Item label='created at'>{new Date(created_at).toString()}</Descriptions.Item>
+                        <Descriptions.Item label='data file'>
+                            <Button
+                                type='link'
+                                size='small'
+                                onClick={async () => {
+                                    const res = await downloadFile({
+                                        file_name: data_file_name,
+                                        file_path: data_file_path
+                                    });
+
+                                    if (res.code === -1) {
+                                        messageApi.error(res.msg);
+                                    } else {
+                                        const blob = new Blob([res], {
+                                            type: 'application/octet-stream'
+                                        });
+
+                                        const link = document.createElement('a');
+
+                                        link.download = data_file_name;
+
+                                        link.href = URL.createObjectURL(blob);
+                                        document.body.appendChild(link);
+                                        link.click();
+
+                                        URL.revokeObjectURL(link.href);
+                                        document.body.removeChild(link);
+                                    }
+                                }}>
+                                {data_file_name}
+                            </Button>
+                        </Descriptions.Item>
                     </Descriptions>
                 )}
             </Drawer>
