@@ -32,3 +32,10 @@ export function createModel(data) {
 export function getModelList() {
     return get('api/v1/console/model/list');
 }
+
+export function createTask(data) {
+    return post('api/v1/console/task', data);
+}
+export function getTaskList() {
+    return get('api/v1/console/task/list');
+}

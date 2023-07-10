@@ -3,7 +3,7 @@ import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-d
 import routes from '@/routes';
 import { Layout, FloatButton, Menu } from 'antd';
 import '@/style/layout.less';
-import { CloudServerOutlined, BuildOutlined, LayoutOutlined } from '@ant-design/icons';
+import { CloudServerOutlined, BuildOutlined, LayoutOutlined, DashboardOutlined } from '@ant-design/icons';
 
 const { Sider, Content } = Layout;
 
@@ -19,6 +19,7 @@ function getItem(label, key, icon, children, type) {
 
 const items = [
     getItem('Instance List', '/console/instance', <CloudServerOutlined />),
+    getItem('Task List', '/console/task', <DashboardOutlined />),
     getItem('Template List', '/console/template', <LayoutOutlined />),
     getItem('Model List', '/console/model', <BuildOutlined />)
 ];

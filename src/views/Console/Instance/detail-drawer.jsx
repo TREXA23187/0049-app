@@ -49,11 +49,11 @@ export default function DetailDrawer(props) {
             authorization: 'authorization-text'
         },
         beforeUpload: file => {
-            const isText = file.type.startsWith('text');
-            if (!isText) {
+            const isCSV = file.type === 'text/csv';
+            if (!isCSV) {
                 messageApi.error(`${file.name} is not a text file`);
             }
-            return isText || Upload.LIST_IGNORE;
+            return isCSV || Upload.LIST_IGNORE;
         },
         onChange(info) {
             if (info.file.status === 'done') {
@@ -150,7 +150,6 @@ export default function DetailDrawer(props) {
                         }}
                         initialValues={{
                             template: 'default',
-                            model: 'dt',
                             ...data
                         }}
                         form={form}
@@ -193,7 +192,15 @@ export default function DetailDrawer(props) {
                             />
                         </Form.Item>
 
-                        <Form.Item label='Model' name='model'>
+                        <Form.Item
+                            label='Model'
+                            name='model'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please choose a model'
+                                }
+                            ]}>
                             <Select
                                 options={modelList.map(item => {
                                     return {

@@ -117,7 +117,7 @@ export default function Model() {
     return (
         <div>
             {contextHolder}
-            <Row>
+            <Row style={{ marginBottom: '10px' }}>
                 <Col span={2}>
                     <Button
                         type='primary'

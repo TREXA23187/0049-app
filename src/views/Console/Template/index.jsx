@@ -69,7 +69,7 @@ export default function Template() {
     return (
         <div>
             {contextHolder}
-            <Row>
+            <Row style={{ marginBottom: '10px' }}>
                 <Col span={2}>
                     <Button
                         type='primary'
