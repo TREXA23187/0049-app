@@ -19,7 +19,7 @@ export default function Console() {
     const { data: instanceList, refresh, run } = useRequest(async () => {
         const res = await getInstanceList();
 
-        return res.data?.list?.reverse();
+        return res.data?.list?.reverse() || [];
     });
 
     return (

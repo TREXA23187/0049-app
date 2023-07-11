@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer, Button, Form, Input, message, Select, Alert, Divider, Descriptions, Badge, Tag } from 'antd';
-import { createTask, getInstanceList } from '@/api/console';
+import { Drawer, Button, Form, Input, message, Select, Upload, Divider, Descriptions, Badge, Tag } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { createTask, getInstanceList, operateTask, getTemplateList, getModelList } from '@/api/console';
 import { getFileInfo } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
 
 export default function TaskDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { name, instance_id, status, created_at, type } = data;
+    const { name, id, instance_id, status, created_at, type } = data;
 
     const [taskType, setTaskType] = useState();
-    const [currentInstanceInfo, setCurrentInstanceInfo] = useState([]);
-    const [instanceFileCols, setInstanceFileCols] = useState([]);
+    const [fileCols, setFileCols] = useState([]);
+    const [currentFilePath, setCurrentFilePath] = useState('');
+
+    const [fileList, setFileList] = useState([]);
 
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
 
-    const { data: instanceList } = useRequest(async () => {
-        const res = await getInstanceList();
+    const { data: templateList } = useRequest(async data => {
+        const res = await getTemplateList();
+
+        return res.data?.list || [];
+    });
+
+    const { data: modelList } = useRequest(async () => {
+        const res = await getModelList();
 
         return res.data?.list || [];
     });
@@ -34,16 +43,65 @@ export default function TaskDetailDrawer(props) {
 
     useEffect(() => {
         (async () => {
-            const cols = await getFileColumns(currentInstanceInfo?.[0]?.data_file_path);
+            const cols = await getFileColumns(currentFilePath);
 
-            setInstanceFileCols(cols);
+            setFileCols(cols || []);
         })();
-    }, [currentInstanceInfo]);
+    }, [currentFilePath]);
+
+    const fileUploadProps = {
+        action: 'http://localhost:3000/api/v1/file/upload?type=data',
+        headers: {
+            authorization: 'authorization-text'
+        },
+        beforeUpload: file => {
+            const isCSV = file.type === 'text/csv';
+            if (!isCSV) {
+                messageApi.error(`${file.name} is not a text file`);
+            }
+            return isCSV || Upload.LIST_IGNORE;
+        },
+        onChange(info) {
+            if (info.file.status === 'done') {
+                messageApi.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                messageApi.error(`${info.file.name} file upload failed.`);
+            }
+
+            let newFileList = [...info.fileList];
+
+            // 1. Limit the number of uploaded files
+            // Only to show two recent uploaded files, and old ones will be replaced by the new
+            // newFileList = newFileList.slice(-2);
+
+            // 2. Read from response and show file link
+            newFileList = newFileList.map(file => {
+                if (file.response) {
+                    // Component will show file.url as link
+                    setCurrentFilePath(file.response?.data?.file_path);
+                    file.url = file.response.url;
+                }
+                return file;
+            });
+            setFileList(newFileList);
+        }
+    };
+
+    const normFile = e => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.fileList;
+    };
 
     const onFinish = async () => {
-        const values = {
-            ...form.getFieldsValue()
-        };
+        const values = form.getFieldsValue();
+        values.data_file_names =
+            values.data_file?.map(file => {
+                return file.name;
+            }) || [];
+
+        delete values.data_file;
 
         const res = await createTask(values);
 
@@ -94,36 +152,6 @@ export default function TaskDetailDrawer(props) {
                         </Form.Item>
 
                         <Form.Item
-                            label='Instance'
-                            name='instance_id'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please choose an instance'
-                                }
-                            ]}>
-                            <Select
-                                style={{
-                                    width: 190
-                                }}
-                                options={instanceList?.map(item => {
-                                    return {
-                                        label: item?.title,
-                                        value: item?.id,
-                                        disabled: item.status === 'not exist'
-                                    };
-                                })}
-                                onChange={e => {
-                                    const instance = instanceList.filter(item => {
-                                        return item.id === e;
-                                    });
-
-                                    setCurrentInstanceInfo(instance);
-                                }}
-                            />
-                        </Form.Item>
-
-                        <Form.Item
                             label='Type'
                             name='type'
                             rules={[
@@ -150,12 +178,43 @@ export default function TaskDetailDrawer(props) {
                             />
                         </Form.Item>
 
-                        {taskType === 'training' && currentInstanceInfo.length !== 0 && (
+                        {taskType === 'training' && (
                             <>
                                 <Divider orientation='left' orientationMargin='0' plain>
                                     Training Attributes
                                 </Divider>
-                                {currentInstanceInfo[0].data_file_name ? (
+
+                                <Form.Item
+                                    label='Model'
+                                    name='model'
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please choose a model'
+                                        }
+                                    ]}>
+                                    <Select
+                                        options={modelList.map(item => {
+                                            return {
+                                                value: item.name,
+                                                label: item.name
+                                            };
+                                        })}
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    label='Data File'
+                                    name='data_file'
+                                    valuePropName='fileList'
+                                    getValueFromEvent={normFile}>
+                                    <Upload {...fileUploadProps}>
+                                        {fileList?.length < 1 && (
+                                            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                                        )}
+                                    </Upload>
+                                </Form.Item>
+
+                                {fileList.length > 0 && (
                                     <Form.Item
                                         label='Label'
                                         name='training_label'
@@ -169,22 +228,42 @@ export default function TaskDetailDrawer(props) {
                                             style={{
                                                 width: 190
                                             }}
-                                            options={instanceFileCols?.map(item => {
+                                            options={fileCols?.map(item => {
                                                 return {
-                                                    label: item,
-                                                    value: item
+                                                    value: item,
+                                                    label: item
                                                 };
                                             })}
                                         />
                                     </Form.Item>
-                                ) : (
-                                    <Alert
-                                        message="The instance doesn't have data file"
-                                        type='warning'
-                                        showIcon
-                                        style={{ marginBottom: 10, height: 30 }}
-                                    />
                                 )}
+                            </>
+                        )}
+
+                        {taskType === 'deployment' && (
+                            <>
+                                <Divider orientation='left' orientationMargin='0' plain>
+                                    Deployment Attributes
+                                </Divider>
+
+                                <Form.Item
+                                    label='Template'
+                                    name='template'
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please choose a template'
+                                        }
+                                    ]}>
+                                    <Select
+                                        options={templateList.map(item => {
+                                            return {
+                                                value: item.name,
+                                                label: item.name
+                                            };
+                                        })}
+                                    />
+                                </Form.Item>
                             </>
                         )}
 
@@ -226,34 +305,23 @@ export default function TaskDetailDrawer(props) {
                             ) : status === 'exited' ? (
                                 <div>
                                     <Badge status='error' /> <span>{status}</span>
-                                    {/* <Button
+                                    <Button
                                         type='primary'
-                                        loading={loading}
                                         onClick={async () => {
-                                            const res = await operate({ instance_id, operation: 'start' });
-                                            if (res.code === 0) {
-                                                setStatus('running');
-                                                refreshList();
-                                            }
+                                            const res = await operateTask({
+                                                task_id: id.toString(),
+                                                operation: 'start'
+                                            });
+                                            console.log(res);
+                                            // if (res.code === 0) {
+                                            //     // setStatus('running');
+                                            //     refreshList();
+                                            // }
                                         }}
                                         size='small'
                                         style={{ marginLeft: '30px' }}>
                                         start
                                     </Button>
-                                    <Button
-                                        danger
-                                        loading={loading}
-                                        onClick={async () => {
-                                            const res = await operate({ instance_id, operation: 'remove' });
-                                            if (res.code === 0) {
-                                                setStatus('not exist');
-                                                refreshList();
-                                            }
-                                        }}
-                                        size='small'
-                                        style={{ marginLeft: '10px' }}>
-                                        remove
-                                    </Button> */}
                                 </div>
                             ) : (
                                 <div>

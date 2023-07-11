@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Upload, Space } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space } from 'antd';
 import { createInstance, operateInstance, removeInstance, getTemplateList, getModelList } from '@/api/console';
 import { downloadFile } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
@@ -38,47 +37,8 @@ export default function DetailDrawer(props) {
         return res.data?.list || [];
     });
 
-    const [fileList, setFileList] = useState([]);
-
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
-
-    const fileUploadProps = {
-        action: 'http://localhost:3000/api/v1/file/upload?type=data',
-        headers: {
-            authorization: 'authorization-text'
-        },
-        beforeUpload: file => {
-            const isCSV = file.type === 'text/csv';
-            if (!isCSV) {
-                messageApi.error(`${file.name} is not a text file`);
-            }
-            return isCSV || Upload.LIST_IGNORE;
-        },
-        onChange(info) {
-            if (info.file.status === 'done') {
-                messageApi.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-                messageApi.error(`${info.file.name} file upload failed.`);
-            }
-
-            let newFileList = [...info.fileList];
-
-            // 1. Limit the number of uploaded files
-            // Only to show two recent uploaded files, and old ones will be replaced by the new
-            // newFileList = newFileList.slice(-2);
-
-            // 2. Read from response and show file link
-            newFileList = newFileList.map(file => {
-                if (file.response) {
-                    // Component will show file.url as link
-                    file.url = file.response.url;
-                }
-                return file;
-            });
-            setFileList(newFileList);
-        }
-    };
 
     const onFinish = async () => {
         const values = form.getFieldsValue();
@@ -98,13 +58,6 @@ export default function DetailDrawer(props) {
         } else {
             messageApi.error(res.msg);
         }
-    };
-
-    const normFile = e => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e?.fileList;
     };
 
     return (
@@ -213,16 +166,6 @@ export default function DetailDrawer(props) {
 
                         <Form.Item label='URL' name='url'>
                             <Input />
-                        </Form.Item>
-
-                        <Form.Item
-                            label='Data File'
-                            name='data_file'
-                            valuePropName='fileList'
-                            getValueFromEvent={normFile}>
-                            <Upload {...fileUploadProps}>
-                                {fileList?.length < 1 && <Button icon={<UploadOutlined />}>Click to Upload</Button>}
-                            </Upload>
                         </Form.Item>
 
                         <Form.Item

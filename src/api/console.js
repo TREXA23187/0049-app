@@ -39,3 +39,6 @@ export function createTask(data) {
 export function getTaskList() {
     return get('api/v1/console/task/list');
 }
+export function operateTask(data) {
+    return post('api/v1/console/task/operate', data);
+}
