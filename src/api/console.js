@@ -32,6 +32,9 @@ export function createModel(data) {
 export function getModelList() {
     return get('api/v1/console/model/list');
 }
+export function removeModel(params) {
+    return del('api/v1/console/model', params);
+}
 
 export function createTask(data) {
     return post('api/v1/console/task', data);

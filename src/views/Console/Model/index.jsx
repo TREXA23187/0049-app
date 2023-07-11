@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Button, message, Row, Col } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
-import { getModelList } from '@/api/console';
+import { getModelList, removeModel } from '@/api/console';
 import { downloadFile } from '@/api/file';
 import ModelDetailDrawer from './model-detail-drawer';
 
@@ -97,13 +97,13 @@ export default function Model() {
                             type='text'
                             danger
                             onClick={async () => {
-                                // const res = await removeTemplate({ id: rol.id });
-                                // if (res.code === 0) {
-                                //     messageApi.success('removed');
-                                //     refresh();
-                                // } else {
-                                //     messageApi.error('remove failed');
-                                // }
+                                const res = await removeModel({ id: rol.id });
+                                if (res.code === 0) {
+                                    messageApi.success(res.msg);
+                                    refresh();
+                                } else {
+                                    messageApi.error(res.msg);
+                                }
                             }}
                             disabled={record.is_default}>
                             {t('Remove')}
