@@ -1,10 +1,9 @@
 import React from 'react';
 import { Col, Row, Button, Table, message } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { getTemplateList } from '@/api/console';
+import { getTemplateList, removeTemplate } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
-import { removeTemplate } from '@/api/console';
 
 export default function Template() {
     const { t } = useTranslation();

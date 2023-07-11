@@ -42,3 +42,10 @@ export function getTaskList() {
 export function operateTask(data) {
     return post('api/v1/console/task/operate', data);
 }
+
+export function createImage(data) {
+    return post('api/v1/console/image', data);
+}
+export function getImageList() {
+    return get('api/v1/console/image/list');
+}

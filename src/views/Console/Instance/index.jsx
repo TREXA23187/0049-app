@@ -1,61 +1,187 @@
 import React, { useState } from 'react';
-import { Col, Row, Button } from 'antd';
+import { Col, Row, Button, Tabs, Table, message, Empty } from 'antd';
 import InstanceCard from './instance-card';
-import DetailDrawer from './detail-drawer';
-import { getInstanceList } from '@/api/console';
+import InstanceDetailDrawer from './instance-detail-drawer';
+import { getInstanceList, getImageList } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
+import { useTranslation } from 'react-i18next';
+import ImageDetailDrawer from './image-detail-drawer';
 
 export default function Console() {
-    const [drawerOpen, setDrawOpen] = useState(false);
+    const { t } = useTranslation();
+
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const [instanceDetailDrawerOpen, setInstanceDetailDrawOpen] = useState(false);
+    const [imageDetailDrawerOpen, setImageDetailDrawOpen] = useState(false);
+
     const [currentCardData, setCurrentCardData] = useState({});
-    const [isEditDrawer, setIsEditDrawer] = useState(false);
+    const [currentImageData, setCurrentImageData] = useState({});
+
+    const [isEditInstanceDrawer, setIsEditInstanceDrawer] = useState(false);
+    const [isEditImageDrawer, setIsEditImageDrawer] = useState(false);
 
     const onCardClick = data => {
-        setIsEditDrawer(false);
-        setDrawOpen(true);
+        setIsEditInstanceDrawer(false);
+        setInstanceDetailDrawOpen(true);
         setCurrentCardData(data);
     };
 
-    const { data: instanceList, refresh, run } = useRequest(async () => {
+    const { data: instanceList, refresh: refreshInstanceList } = useRequest(async () => {
         const res = await getInstanceList();
 
         return res.data?.list?.reverse() || [];
     });
 
+    const { data: imageList, refresh: refreshImageList } = useRequest(async () => {
+        const res = await getImageList();
+
+        return res.data?.list || [];
+    });
+
+    const columns = [
+        {
+            title: t('Repository'),
+            dataIndex: 'repository',
+            key: 'repository'
+        },
+        {
+            title: t('Tag'),
+            dataIndex: 'tag',
+            key: 'tag',
+            render: value => {
+                return value.length > 250 ? value.slice(1, 250) + '...' : value;
+            }
+        },
+        {
+            title: t('Image ID'),
+            dataIndex: 'image_id',
+            key: 'image_id',
+            render(rol) {
+                return rol ? rol.slice(0, 20) : '';
+            }
+        },
+        {
+            title: t('Size'),
+            dataIndex: 'size',
+            key: 'size',
+            render(rol) {
+                return rol ? (rol / (1000 * 1000)).toFixed(2) + 'MB' : '';
+            }
+        },
+        {
+            title: t('Action'),
+            render(rol) {
+                return (
+                    <div>
+                        <Button
+                            type='link'
+                            onClick={() => {
+                                setIsEditImageDrawer(false);
+                                setCurrentImageData(rol);
+                                setImageDetailDrawOpen(true);
+                            }}>
+                            {t('Detail')}
+                        </Button>
+                        <Button
+                            type='text'
+                            danger
+                            onClick={async () => {
+                                // const res = await removeTemplate({ id: rol.id });
+                                // if (res.code === 0) {
+                                //     messageApi.success('removed');
+                                //     refresh();
+                                // } else {
+                                //     messageApi.error('remove failed');
+                                // }
+                            }}>
+                            {t('Remove')}
+                        </Button>
+                    </div>
+                );
+            }
+        }
+    ];
+
+    const tabItems = [
+        {
+            key: 'instance',
+            label: `Instances`,
+            children: (
+                <>
+                    <Row>
+                        <Col span={2}>
+                            <Button
+                                type='primary'
+                                style={{ margin: '0 10px' }}
+                                onClick={() => {
+                                    setCurrentCardData({});
+                                    setIsEditInstanceDrawer(true);
+                                    setInstanceDetailDrawOpen(true);
+                                }}>
+                                New Instance
+                            </Button>
+                        </Col>
+                    </Row>
+                    <Row gutter={12}>
+                        {instanceList?.map((item, index) => {
+                            return (
+                                <Col span={8} key={index}>
+                                    <InstanceCard onCardClick={onCardClick} data={item} />
+                                </Col>
+                            );
+                        })}
+                    </Row>
+                    {!instanceList?.length && <Empty />}
+                </>
+            )
+        },
+        {
+            key: 'image',
+            label: `Images`,
+            children: (
+                <>
+                    <Row style={{ marginBottom: '10px' }}>
+                        <Col span={2}>
+                            <Button
+                                type='primary'
+                                style={{ margin: '0 10px' }}
+                                onClick={() => {
+                                    setCurrentImageData({});
+                                    setIsEditImageDrawer(true);
+                                    setImageDetailDrawOpen(true);
+                                }}>
+                                New Image
+                            </Button>
+                        </Col>
+                    </Row>
+                    <Table columns={columns} dataSource={imageList} pagination={{ defaultPageSize: 5 }} rowKey='id' />
+                </>
+            )
+        }
+    ];
+
     return (
         <>
-            <Row>
-                <Col span={2}>
-                    <Button
-                        type='primary'
-                        style={{ margin: '0 10px' }}
-                        onClick={() => {
-                            setCurrentCardData({});
-                            setIsEditDrawer(true);
-                            setDrawOpen(true);
-                        }}>
-                        New Instance
-                    </Button>
-                </Col>
-            </Row>
-            <Row gutter={12}>
-                {instanceList?.map((item, index) => {
-                    return (
-                        <Col span={8} key={index}>
-                            <InstanceCard onCardClick={onCardClick} data={item} />
-                        </Col>
-                    );
-                })}
-            </Row>
-
-            <DetailDrawer
+            <Tabs defaultActiveKey='1' items={tabItems} type='card' />
+            <InstanceDetailDrawer
                 data={currentCardData}
-                isEdit={isEditDrawer}
-                open={drawerOpen}
-                refreshList={refresh}
+                isEdit={isEditInstanceDrawer}
+                open={instanceDetailDrawerOpen}
+                refreshList={refreshInstanceList}
                 onClose={() => {
                     setCurrentCardData({});
-                    setDrawOpen(false);
+                    setInstanceDetailDrawOpen(false);
+                }}
+            />
+            <ImageDetailDrawer
+                data={currentImageData}
+                isEdit={isEditImageDrawer}
+                open={imageDetailDrawerOpen}
+                refreshList={refreshImageList}
+                onClose={() => {
+                    setCurrentImageData({});
+                    setImageDetailDrawOpen(false);
                 }}
             />
         </>

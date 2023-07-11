@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Form, Input, message, Select, Upload, Divider, Descriptions, Badge, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { createTask, getInstanceList, operateTask, getTemplateList, getModelList } from '@/api/console';
+import { createTask, operateTask, getTemplateList, getModelList } from '@/api/console';
 import { getFileInfo } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
+import { downloadFile } from '@/api/file';
 
 export default function TaskDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { name, id, instance_id, status, created_at, type } = data;
+    const { name, id, model, status, created_at, type, data_file_name, data_file_path } = data;
 
     const [taskType, setTaskType] = useState();
     const [fileCols, setFileCols] = useState([]);
@@ -279,7 +280,6 @@ export default function TaskDetailDrawer(props) {
                     </Form>
                 ) : (
                     <Descriptions title={name} column={1}>
-                        <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
                         <Descriptions.Item label='Type:'>
                             <Tag color={type === 'training' ? 'green' : 'blue'}>{type}</Tag>
                         </Descriptions.Item>
@@ -329,7 +329,40 @@ export default function TaskDetailDrawer(props) {
                                 </div>
                             )}
                         </Descriptions.Item>
-                        <Descriptions.Item label='created at'>{new Date(created_at).toString()}</Descriptions.Item>
+                        <Descriptions.Item label='Model:'>{model}</Descriptions.Item>
+                        <Descriptions.Item label='Created At'>{new Date(created_at).toString()}</Descriptions.Item>
+                        <Descriptions.Item label='Data File'>
+                            <Button
+                                type='link'
+                                size='small'
+                                onClick={async () => {
+                                    const res = await downloadFile({
+                                        file_name: data_file_name,
+                                        file_path: data_file_path
+                                    });
+
+                                    if (res.code === -1) {
+                                        messageApi.error(res.msg);
+                                    } else {
+                                        const blob = new Blob([res], {
+                                            type: 'application/octet-stream'
+                                        });
+
+                                        const link = document.createElement('a');
+
+                                        link.download = data_file_name;
+
+                                        link.href = URL.createObjectURL(blob);
+                                        document.body.appendChild(link);
+                                        link.click();
+
+                                        URL.revokeObjectURL(link.href);
+                                        document.body.removeChild(link);
+                                    }
+                                }}>
+                                {data_file_name}
+                            </Button>
+                        </Descriptions.Item>
                     </Descriptions>
                 )}
             </Drawer>

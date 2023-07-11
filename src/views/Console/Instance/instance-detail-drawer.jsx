@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space } from 'antd';
-import { createInstance, operateInstance, removeInstance, getTemplateList, getModelList } from '@/api/console';
-import { downloadFile } from '@/api/file';
+import { createInstance, operateInstance, removeInstance } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
-export default function DetailDrawer(props) {
+export default function InstanceDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { title, description, instance_id, template, model, url, created_at, data_file_name, data_file_path } = data;
+    const { title, description, instance_id, task, url, created_at, data_file_name, data_file_path } = data;
 
     const [status, setStatus] = useState(data.status);
 
@@ -24,18 +23,6 @@ export default function DetailDrawer(props) {
             manual: true
         }
     );
-
-    const { data: templateList } = useRequest(async data => {
-        const res = await getTemplateList();
-
-        return res.data?.list || [];
-    });
-
-    const { data: modelList } = useRequest(async () => {
-        const res = await getModelList();
-
-        return res.data?.list || [];
-    });
 
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
@@ -64,7 +51,7 @@ export default function DetailDrawer(props) {
         <>
             {contextHolder}
             <Drawer
-                title='Intance Detail'
+                title={isEdit ? 'Create Instance' : 'Instance Detail'}
                 placement='right'
                 onClose={onClose}
                 open={open}
@@ -112,12 +99,12 @@ export default function DetailDrawer(props) {
                         }}
                         autoComplete='off'>
                         <Form.Item
-                            label='Title'
-                            name='title'
+                            label='Name'
+                            name='name'
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input title'
+                                    message: 'Please input name'
                                 }
                             ]}>
                             <Input />
@@ -132,36 +119,6 @@ export default function DetailDrawer(props) {
                                 }
                             ]}>
                             <Input />
-                        </Form.Item>
-
-                        <Form.Item label='Template' name='template'>
-                            <Select
-                                options={templateList.map(item => {
-                                    return {
-                                        value: item.title,
-                                        label: item.title
-                                    };
-                                })}
-                            />
-                        </Form.Item>
-
-                        <Form.Item
-                            label='Model'
-                            name='model'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please choose a model'
-                                }
-                            ]}>
-                            <Select
-                                options={modelList.map(item => {
-                                    return {
-                                        value: item.name,
-                                        label: item.name
-                                    };
-                                })}
-                            />
                         </Form.Item>
 
                         <Form.Item label='URL' name='url'>
@@ -182,8 +139,7 @@ export default function DetailDrawer(props) {
                     <Descriptions title={title} column={1}>
                         <Descriptions.Item label='Description'> {description}</Descriptions.Item>
                         <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
-                        <Descriptions.Item label='Template'>{template}</Descriptions.Item>
-                        <Descriptions.Item label='Model'>{model}</Descriptions.Item>
+                        <Descriptions.Item label='Task'>{task}</Descriptions.Item>
                         <Descriptions.Item label='URL'>{url}</Descriptions.Item>
                         <Descriptions.Item label='Status'>
                             {status === 'running' ? (
@@ -243,38 +199,6 @@ export default function DetailDrawer(props) {
                             )}
                         </Descriptions.Item>
                         <Descriptions.Item label='created at'>{new Date(created_at).toString()}</Descriptions.Item>
-                        <Descriptions.Item label='data file'>
-                            <Button
-                                type='link'
-                                size='small'
-                                onClick={async () => {
-                                    const res = await downloadFile({
-                                        file_name: data_file_name,
-                                        file_path: data_file_path
-                                    });
-
-                                    if (res.code === -1) {
-                                        messageApi.error(res.msg);
-                                    } else {
-                                        const blob = new Blob([res], {
-                                            type: 'application/octet-stream'
-                                        });
-
-                                        const link = document.createElement('a');
-
-                                        link.download = data_file_name;
-
-                                        link.href = URL.createObjectURL(blob);
-                                        document.body.appendChild(link);
-                                        link.click();
-
-                                        URL.revokeObjectURL(link.href);
-                                        document.body.removeChild(link);
-                                    }
-                                }}>
-                                {data_file_name}
-                            </Button>
-                        </Descriptions.Item>
                     </Descriptions>
                 )}
             </Drawer>
