@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Row, Button, Tabs, Table, message, Empty } from 'antd';
+import { Col, Row, Button, Tabs, Table, Empty } from 'antd';
 import InstanceCard from './instance-card';
 import InstanceDetailDrawer from './instance-detail-drawer';
 import { getInstanceList, getImageList } from '@/api/console';
@@ -9,8 +9,6 @@ import ImageDetailDrawer from './image-detail-drawer';
 
 export default function Console() {
     const { t } = useTranslation();
-
-    const [messageApi, contextHolder] = message.useMessage();
 
     const [instanceDetailDrawerOpen, setInstanceDetailDrawOpen] = useState(false);
     const [imageDetailDrawerOpen, setImageDetailDrawOpen] = useState(false);

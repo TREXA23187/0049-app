@@ -45,6 +45,9 @@ export function getTaskList() {
 export function operateTask(data) {
     return post('api/v1/console/task/operate', data);
 }
+export function removeTask(params) {
+    return del('api/v1/console/task', params);
+}
 
 export function createImage(data) {
     return post('api/v1/console/image', data);

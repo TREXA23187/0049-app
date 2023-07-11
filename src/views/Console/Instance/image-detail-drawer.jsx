@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space } from 'antd';
-import { createInstance, operateInstance, removeInstance, getTaskList, createImage } from '@/api/console';
+import React from 'react';
+import { Drawer, Descriptions, Button, Select, Form, Input, message } from 'antd';
+import { getTaskList, createImage } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function ImageDetailDrawer(props) {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Button, message, Row, Col, Tag, Badge } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
-import { getTaskList } from '@/api/console';
+import { getTaskList, removeTask } from '@/api/console';
 import TaskDetailDrawer from './task-detail-drawer';
 
 export default function Task() {
@@ -68,13 +68,13 @@ export default function Task() {
                             type='text'
                             danger
                             onClick={async () => {
-                                // const res = await removeTemplate({ id: rol.id });
-                                // if (res.code === 0) {
-                                //     messageApi.success('removed');
-                                //     refresh();
-                                // } else {
-                                //     messageApi.error('remove failed');
-                                // }
+                                const res = await removeTask({ id: rol.id });
+                                if (res.code === 0) {
+                                    messageApi.success(res.msg);
+                                    refresh();
+                                } else {
+                                    messageApi.error(res.msg);
+                                }
                             }}
                             disabled={record.is_default}>
                             {t('Remove')}

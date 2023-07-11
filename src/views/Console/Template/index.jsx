@@ -50,10 +50,10 @@ export default function Template() {
                             onClick={async () => {
                                 const res = await removeTemplate({ id: rol.id });
                                 if (res.code === 0) {
-                                    messageApi.success('removed');
+                                    messageApi.success(res.msg);
                                     refresh();
                                 } else {
-                                    messageApi.error('remove failed');
+                                    messageApi.error(res.msg);
                                 }
                             }}
                             disabled={rol.title === 'default'}>
