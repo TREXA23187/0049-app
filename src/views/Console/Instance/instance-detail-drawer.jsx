@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space } from 'antd';
-import { createInstance, operateInstance, removeInstance } from '@/api/console';
+import { createInstance, operateInstance, removeInstance, getImageList } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function InstanceDetailDrawer(props) {
-    const { data, open, isEdit, onClose, refreshList } = props;
-    const { title, description, instance_id, task, url, created_at, data_file_name, data_file_path } = data;
+    const { data, open, isEdit, onClose, refreshList, imageList } = props;
+    const { title, description, instance_id, task, url, created_at } = data;
 
     const [status, setStatus] = useState(data.status);
 
@@ -29,12 +29,8 @@ export default function InstanceDetailDrawer(props) {
 
     const onFinish = async () => {
         const values = form.getFieldsValue();
-        values.data_file_names =
-            values.data_file?.map(file => {
-                return file.name;
-            }) || [];
 
-        delete values.data_file;
+        console.log(values);
 
         const res = await createInstance(values);
 
@@ -78,7 +74,7 @@ export default function InstanceDetailDrawer(props) {
                 }>
                 {isEdit ? (
                     <Form
-                        name='basic'
+                        name='create_instance_form'
                         style={{
                             maxWidth: '85%'
                         }}
@@ -119,6 +115,25 @@ export default function InstanceDetailDrawer(props) {
                                 }
                             ]}>
                             <Input />
+                        </Form.Item>
+
+                        <Form.Item
+                            label='Image'
+                            name='image'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please select image'
+                                }
+                            ]}>
+                            <Select
+                                options={imageList?.map(item => {
+                                    return {
+                                        value: item.repository,
+                                        label: item.repository
+                                    };
+                                })}
+                            />
                         </Form.Item>
 
                         <Form.Item label='URL' name='url'>

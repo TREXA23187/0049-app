@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Col, Row, Button, Tabs, Table, Empty } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Col, Row, Button, Tabs, Table, Empty, Alert } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import InstanceCard from './instance-card';
 import InstanceDetailDrawer from './instance-detail-drawer';
-import { getInstanceList, getImageList } from '@/api/console';
+import { getInstanceList, getImageList, getImageInfo } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
 import ImageDetailDrawer from './image-detail-drawer';
@@ -19,6 +20,16 @@ export default function Console() {
     const [isEditInstanceDrawer, setIsEditInstanceDrawer] = useState(false);
     const [isEditImageDrawer, setIsEditImageDrawer] = useState(false);
 
+    const [showBuildingAlert, setShowBuildingAlert] = useState(false);
+
+    const [currentTab, setCurrentTab] = useState(false);
+
+    let timer = useRef(null);
+
+    const clearTimer = () => {
+        clearInterval(timer);
+    };
+
     const onCardClick = data => {
         setIsEditInstanceDrawer(false);
         setInstanceDetailDrawOpen(true);
@@ -31,11 +42,15 @@ export default function Console() {
         return res.data?.list?.reverse() || [];
     });
 
-    const { data: imageList, refresh: refreshImageList } = useRequest(async () => {
+    const { data: imageList, refresh: refreshImageList, run: runImageList } = useRequest(async () => {
         const res = await getImageList();
 
-        return res.data?.list || [];
+        return res.data?.list?.reverse() || [];
     });
+
+    useEffect(() => {
+        runImageList();
+    }, [currentTab]);
 
     const columns = [
         {
@@ -50,6 +65,11 @@ export default function Console() {
             render: value => {
                 return value.length > 250 ? value.slice(1, 250) + '...' : value;
             }
+        },
+        {
+            title: t('Status'),
+            dataIndex: 'status',
+            key: 'status'
         },
         {
             title: t('Image ID'),
@@ -160,12 +180,22 @@ export default function Console() {
     ];
 
     return (
-        <>
-            <Tabs defaultActiveKey='1' items={tabItems} type='card' />
+        <div style={{ position: 'relative' }}>
+            <Tabs defaultActiveKey='1' items={tabItems} type='card' onChange={setCurrentTab} />
+            {showBuildingAlert && (
+                <Alert
+                    message='The image is being built.'
+                    type='info'
+                    showIcon
+                    icon={<LoadingOutlined />}
+                    style={{ position: 'absolute', right: 0, top: 0, width: 230 }}
+                />
+            )}
             <InstanceDetailDrawer
                 data={currentCardData}
                 isEdit={isEditInstanceDrawer}
                 open={instanceDetailDrawerOpen}
+                imageList={imageList}
                 refreshList={refreshInstanceList}
                 onClose={() => {
                     setCurrentCardData({});
@@ -175,6 +205,18 @@ export default function Console() {
             <ImageDetailDrawer
                 data={currentImageData}
                 isEdit={isEditImageDrawer}
+                showBuildingAlert={repository => {
+                    setShowBuildingAlert(true);
+
+                    timer = setInterval(async () => {
+                        const res = await getImageInfo({ repository });
+                        if (res.code === 0 && !res.data) {
+                            refreshImageList();
+                            setShowBuildingAlert(false);
+                            clearTimer();
+                        }
+                    }, 2000);
+                }}
                 open={imageDetailDrawerOpen}
                 refreshList={refreshImageList}
                 onClose={() => {
@@ -182,6 +224,6 @@ export default function Console() {
                     setImageDetailDrawOpen(false);
                 }}
             />
-        </>
+        </div>
     );
 }

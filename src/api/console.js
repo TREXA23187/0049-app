@@ -55,3 +55,6 @@ export function createImage(data) {
 export function getImageList() {
     return get('api/v1/console/image/list');
 }
+export function getImageInfo(params) {
+    return get('api/v1/console/image/info', params);
+}

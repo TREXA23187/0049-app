@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Drawer, Descriptions, Button, Select, Form, Input, message } from 'antd';
 import { getTaskList, createImage } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function ImageDetailDrawer(props) {
-    const { data, open, isEdit, onClose, refreshList } = props;
+    const { data, open, isEdit, onClose, refreshList, showBuildingAlert } = props;
     const { repository, size, created_at, tag, image_id } = data;
 
-    const { data: taskList } = useRequest(async data => {
+    const { data: taskList, loading } = useRequest(async () => {
         const res = await getTaskList();
 
         return res.data?.list || [];
@@ -22,9 +22,11 @@ export default function ImageDetailDrawer(props) {
         const res = await createImage(values);
 
         if (res.code === 0) {
-            messageApi.success(`instance created successfully`);
+            messageApi.success(res.msg);
             refreshList();
             onClose();
+
+            showBuildingAlert(values.repository);
         } else {
             messageApi.error(res.msg);
         }
@@ -36,7 +38,7 @@ export default function ImageDetailDrawer(props) {
             <Drawer title={isEdit ? 'Create Image' : 'Image Detail'} placement='right' onClose={onClose} open={open}>
                 {isEdit ? (
                     <Form
-                        name='basic'
+                        name='create_image_form'
                         style={{
                             maxWidth: '85%'
                         }}
@@ -102,7 +104,7 @@ export default function ImageDetailDrawer(props) {
                                 offset: 8,
                                 span: 16
                             }}>
-                            <Button type='primary' htmlType='submit'>
+                            <Button type='primary' htmlType='submit' loading={loading}>
                                 Submit
                             </Button>
                         </Form.Item>
