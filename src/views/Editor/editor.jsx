@@ -203,8 +203,8 @@ export default function EditorApp(props) {
                     title: 'Export JSON',
                     content: JSON.stringify(data),
                     isExport: true,
-                    async callback(title, content) {
-                        const res = await createTemplate({ title, content });
+                    async callback(name, content) {
+                        const res = await createTemplate({ name, content });
                         if (res.code == 0) {
                             messageApi.success(res.msg);
                             setIsExportModalOpen(false);

@@ -104,6 +104,7 @@ export default function Console() {
                         <Button
                             type='text'
                             danger
+                            disabled
                             onClick={async () => {
                                 // const res = await removeTemplate({ id: rol.id });
                                 // if (res.code === 0) {

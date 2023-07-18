@@ -9,8 +9,6 @@ export default function Editor() {
 
     const [data, setData] = useState(JSON.parse(query.get('data')) || jsonData);
     const [globalData, setGlobalData] = useState({
-        username: 'admin',
-        password: 'admin',
         test: 'test'
     });
 

@@ -18,9 +18,9 @@ export default function Template() {
 
     const columns = [
         {
-            title: t('Title'),
-            dataIndex: 'title',
-            key: 'title'
+            title: t('Name'),
+            dataIndex: 'name',
+            key: 'name'
         },
         {
             title: t('Content'),

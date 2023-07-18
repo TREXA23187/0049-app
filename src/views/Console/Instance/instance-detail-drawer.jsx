@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space } from 'antd';
-import { createInstance, operateInstance, removeInstance, getImageList } from '@/api/console';
+import { createInstance, operateInstance, removeInstance } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function InstanceDetailDrawer(props) {
@@ -30,8 +30,6 @@ export default function InstanceDetailDrawer(props) {
     const onFinish = async () => {
         const values = form.getFieldsValue();
 
-        console.log(values);
-
         const res = await createInstance(values);
 
         if (res.code === 0) {
@@ -52,7 +50,8 @@ export default function InstanceDetailDrawer(props) {
                 onClose={onClose}
                 open={open}
                 extra={
-                    !isEdit && (
+                    !isEdit &&
+                    status === 'not exist' && (
                         <Space>
                             <Button
                                 danger

@@ -287,41 +287,6 @@ export default function TaskDetailDrawer(props) {
                             {status === 'running' ? (
                                 <div>
                                     <Badge status='success' /> <span>{status}</span>{' '}
-                                    {/* <Button
-                                        danger
-                                        loading={loading}
-                                        onClick={async () => {
-                                            const res = await operate({ instance_id, operation: 'stop' });
-                                            if (res.code === 0) {
-                                                setStatus('exited');
-                                                refreshList();
-                                            }
-                                        }}
-                                        size='small'
-                                        style={{ marginLeft: '30px' }}>
-                                        stop
-                                    </Button> */}
-                                </div>
-                            ) : status === 'exited' ? (
-                                <div>
-                                    <Badge status='error' /> <span>{status}</span>
-                                    <Button
-                                        type='primary'
-                                        onClick={async () => {
-                                            const res = await operateTask({
-                                                task_id: id.toString(),
-                                                operation: 'start'
-                                            });
-                                            console.log(res);
-                                            // if (res.code === 0) {
-                                            //     // setStatus('running');
-                                            //     refreshList();
-                                            // }
-                                        }}
-                                        size='small'
-                                        style={{ marginLeft: '30px' }}>
-                                        start
-                                    </Button>
                                 </div>
                             ) : (
                                 <div>

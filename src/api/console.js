@@ -58,3 +58,6 @@ export function getImageList() {
 export function getImageInfo(params) {
     return get('api/v1/console/image/info', params);
 }
+export function removeImage(params) {
+    return del('api/v1/console/image', params);
+}
