@@ -24,7 +24,7 @@ import MenuDropdown from '@/components/editor/MenuDropdown';
 import EditorOperator from '@/components/editor/EditorOperator';
 import Grid from '../../components/editor/grid';
 
-const { Header, Content, Sider, Footer } = Layout;
+const { Header, Content, Sider } = Layout;
 
 export default function EditorApp(props) {
     const { data, config, updateData, globalData, updateGlobalData } = props;

@@ -108,7 +108,7 @@ const AppHeader = props => {
                     onClick={() => history.push('/index')}
                 />
 
-                {location.pathname != '/index' && (
+                {location.pathname !== '/index' && (
                     <ArrowLeftOutlined
                         onClick={() => {
                             history.goBack();

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Form, Input, message, Select, Upload, Divider, Descriptions, Badge, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { createTask, operateTask, getTemplateList, getModelList } from '@/api/console';
+import { createTask, getTemplateList, getModelList } from '@/api/console';
 import { getFileInfo } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
 import { downloadFile } from '@/api/file';
 
 export default function TaskDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { name, id, model, status, created_at, type, data_file_name, data_file_path } = data;
+    const { name, model, status, created_at, type, data_file_name, data_file_path } = data;
 
     const [taskType, setTaskType] = useState();
     const [fileCols, setFileCols] = useState([]);

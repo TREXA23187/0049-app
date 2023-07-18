@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Drawer, Descriptions, Button, Select, Form, Input, message } from 'antd';
 import { getTaskList, createImage } from '@/api/console';
 import { useRequest } from '@umijs/hooks';

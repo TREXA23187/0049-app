@@ -18,7 +18,7 @@ export const ls = {
     get(key, defaultVal = null) {
         const lsData = window.localStorage.getItem(key);
 
-        return lsData && lsData != 'undefined' ? JSON.parse(lsData) : defaultVal;
+        return lsData && lsData !== 'undefined' ? JSON.parse(lsData) : defaultVal;
     },
 
     set(key, val) {

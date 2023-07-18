@@ -5,7 +5,6 @@ import { UploadOutlined } from '@ant-design/icons';
 
 export default function ModelDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { is_github } = data;
 
     const [fileList, setFileList] = useState([]);
     const [showGithub, setShowGithub] = useState(false);

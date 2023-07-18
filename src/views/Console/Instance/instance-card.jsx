@@ -20,7 +20,7 @@ export default function InstanceCard(props) {
                 <div>{description}</div>
                 <div>instance id:{instance_id.slice(0, 12)}</div>
                 <div style={{ position: 'absolute', left: '30px', bottom: '20px' }}>
-                    {status == 'running' ? (
+                    {status === 'running' ? (
                         <div>
                             <Badge status='success' /> <span>{status}</span>
                         </div>
