@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunk_0049_app=self.webpackChunk_0049_app||[]).push([[105],{35395:function(t,e,n){n.r(e);n(72791);var r=n(38935),s=n(87309),u=n(80184);e.default=function(t){return(0,u.jsx)(r.ZP,{status:"500",title:"500",subTitle:"Sorry, something went wrong.",extra:(0,u.jsx)(s.ZP,{type:"primary",onClick:function(){return t.history.push("/index")},children:"Back Home"})})}}}]);
-//# sourceMappingURL=500.67babea1.chunk.js.map
