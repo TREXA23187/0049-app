@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Switch, Form, Input, message, Upload } from 'antd';
+import { BASE_URL } from '@/constants';
 import { createModel } from '@/api/console';
 import { UploadOutlined } from '@ant-design/icons';
 
@@ -17,7 +18,7 @@ export default function ModelDetailDrawer(props) {
     });
 
     const fileUploadProps = {
-        action: 'http://localhost:3000/api/v1/file/upload?type=model',
+        action: `http://${BASE_URL}:3000/api/v1/file/upload?type=model`,
         // headers: {
         //     authorization: 'authorization-text'
         // },

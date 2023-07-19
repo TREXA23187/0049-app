@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Form, Input, message, Select, Upload, Divider, Descriptions, Badge, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { BASE_URL } from '@/constants';
 import { createTask, getTemplateList, getModelList } from '@/api/console';
 import { getFileInfo } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
@@ -51,7 +52,7 @@ export default function TaskDetailDrawer(props) {
     }, [currentFilePath]);
 
     const fileUploadProps = {
-        action: 'http://localhost:3000/api/v1/file/upload?type=data',
+        action: `http://${BASE_URL}:3000/api/v1/file/upload?type=data`,
         headers: {
             authorization: 'authorization-text'
         },
