@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Badge, message } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
+import { BASE_URL } from '@/constants';
 
 export default function InstanceCard(props) {
     const { data, onCardClick } = props;
@@ -31,7 +32,7 @@ export default function InstanceCard(props) {
                     )}
                 </div>
                 <div style={{ position: 'absolute', right: '30px', bottom: '20px' }}>
-                    {url}
+                    {`${BASE_URL}:${url.split(':')[1]}`}
                     <CopyOutlined
                         style={{
                             marginLeft: 5,
