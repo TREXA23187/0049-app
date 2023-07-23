@@ -4,15 +4,29 @@ import { Layout, Input, Form, Button, Divider, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { ls } from '@/utils/storage';
 // import { encrypt } from '@/utils/crypt';
-import { login } from '@/api/user';
+import { login, createUser } from '@/api/user';
 import { useTranslation } from 'react-i18next';
 import '@/style/view-style/login.less';
+import SignUpModal from './sign-up-modal';
 
 const Login = props => {
-    const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
 
+    const [loading, setLoading] = useState(false);
+    const [showSignUpModal, setShowSignUpModal] = useState(false);
+
     const [messageApi, contextHolder] = message.useMessage();
+
+    const handleSignUp = async values => {
+        const res = await createUser(values);
+
+        if (res.code === 0) {
+            setShowSignUpModal(false);
+            messageApi.success('sign up successfully');
+        } else {
+            messageApi.error('failed to sign up: ', res.msg);
+        }
+    };
 
     const handleSubmitFinish = async values => {
         setLoading(true);
@@ -66,21 +80,26 @@ const Login = props => {
                                 type='primary'
                                 htmlType='submit'
                                 className='login-form-button'
-                                // style={{ width: '45%' }}
+                                style={{ width: '45%' }}
                                 loading={loading}>
                                 {t('Sign in')}
                             </Button>
-                            {/* <Button
+                            <Button
                                 type='dashed'
-                                htmlType='submit'
                                 className='login-form-button'
                                 style={{ width: '45%', marginLeft: '10%', backgroundColor: '#F5F5F5' }}
-                                loading={loading}>
-                                {t('注册')}
-                            </Button> */}
+                                onClick={() => setShowSignUpModal(true)}>
+                                {t('Sign up')}
+                            </Button>
                         </Form.Item>
                     </Form>
                 </div>
+
+                <SignUpModal
+                    isModalOpen={showSignUpModal}
+                    handleOk={handleSignUp}
+                    handleCancel={() => setShowSignUpModal(false)}
+                />
             </div>
         </Layout>
     );
