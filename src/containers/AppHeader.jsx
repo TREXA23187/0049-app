@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Dropdown, Layout, Avatar, Badge } from 'antd';
 import {
-    BellOutlined,
+    ContainerOutlined,
     EditOutlined,
     GithubOutlined,
     LogoutOutlined,
@@ -98,10 +98,6 @@ const AppHeader = props => {
     return (
         <Header className='header' style={{ height: '50px' }}>
             <div className='left'>
-                {/* <span style={{ marginRight: '25px', cursor: 'pointer' }} onClick={() => history.push('/')}>
-                    <GithubOutlined type='github' style={{ fontSize: '35px', color: '#000' }} />
-                </span> */}
-
                 <GithubOutlined
                     type='github'
                     style={{ marginRight: '30px', cursor: 'pointer', fontSize: '32px', color: '#000' }}
@@ -118,19 +114,18 @@ const AppHeader = props => {
                 )}
             </div>
             <div className='right'>
-                <div className='mr15'>
-                    <a rel='noopener noreferrer' href='/' target='_blank'>
-                        <GithubOutlined style={{ color: '#000' }} />
+                <div style={{ marginRight: 20 }}>
+                    <a href='/docs' style={{ color: '#000' }}>
+                        <ContainerOutlined style={{ marginRight: 5, fontSize: 15 }} />
+                        <span>Docs</span>
                     </a>
                 </div>
                 <div className='mr15'>
-                    <Badge dot={true} offset={[-2, 0]}>
-                        <a href='/' style={{ color: '#000' }}>
-                            <BellOutlined />
-                        </a>
-                    </Badge>
+                    <a rel='noopener noreferrer' href='/' target='_blank'>
+                        <GithubOutlined style={{ color: '#000', fontSize: 15 }} />
+                    </a>
                 </div>
-                <div>
+                <div style={{ marginLeft: 10 }}>
                     <Dropdown menu={{ items }} placement='bottomLeft' arrow>
                         <div style={{ cursor: 'pointer' }}>
                             <Avatar src={avatar} alt='avatar' className='mr15' />

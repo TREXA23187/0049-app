@@ -18,13 +18,17 @@ const Model = AsyncLoadable(() => import(/* webpackChunkName: 'model' */ '@/view
 // task
 const Task = AsyncLoadable(() => import(/* webpackChunkName: 'model' */ '@/views/Console/Task'));
 
+// docs
+const Docs = AsyncLoadable(() => import(/* webpackChunkName: 'docs' */ '@/views/Docs'));
+
 const routes = [
     { path: '/index', exact: true, name: 'index', component: Index },
     { path: '/console/instance', exact: true, name: 'instance', component: Instance },
     { path: '/console/template/editor', exact: true, name: 'editor', component: Editor },
     { path: '/console/template', exact: true, name: 'template', component: Template },
     { path: '/console/model', exact: true, name: 'model', component: Model },
-    { path: '/console/task', exact: true, name: 'task', component: Task }
+    { path: '/console/task', exact: true, name: 'task', component: Task },
+    { path: '/docs', exact: true, name: 'docs', component: Docs }
 ];
 
 export default routes;

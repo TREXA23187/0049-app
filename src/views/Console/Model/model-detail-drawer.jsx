@@ -15,7 +15,7 @@ export default function ModelDetailDrawer(props) {
 
     useEffect(() => {
         setShowGithub(data.is_github ?? false);
-    });
+    }, [data.is_github]);
 
     const fileUploadProps = {
         action: `http://${BASE_URL}:3000/api/v1/file/upload?type=model`,
