@@ -103,6 +103,11 @@ export default function TaskDetailDrawer(props) {
                 return file.name;
             }) || [];
 
+        values.data_file_paths =
+            values.data_file?.map(file => {
+                return file.response.data.file_path;
+            }) || [];
+
         delete values.data_file;
 
         const res = await createTask(values);
@@ -127,7 +132,7 @@ export default function TaskDetailDrawer(props) {
                             maxWidth: '85%'
                         }}
                         labelCol={{
-                            span: 8
+                            span: 10
                         }}
                         wrapperCol={{
                             span: 16
@@ -205,7 +210,7 @@ export default function TaskDetailDrawer(props) {
                                     />
                                 </Form.Item>
                                 <Form.Item
-                                    label='Data File'
+                                    label='Data File (.csv)'
                                     name='data_file'
                                     valuePropName='fileList'
                                     getValueFromEvent={normFile}>

@@ -38,8 +38,8 @@ export default function Model() {
                             type='link'
                             onClick={async () => {
                                 const { model_file_name, model_file_path } = record;
+
                                 const res = await downloadFile({
-                                    file_name: model_file_name,
                                     file_path: model_file_path
                                 });
 

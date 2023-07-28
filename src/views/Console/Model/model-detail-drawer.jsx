@@ -19,16 +19,13 @@ export default function ModelDetailDrawer(props) {
 
     const fileUploadProps = {
         action: `http://${BASE_URL}:3000/api/v1/file/upload?type=model`,
-        // headers: {
-        //     authorization: 'authorization-text'
-        // },
-        // beforeUpload: file => {
-        //     const isText = file.type.startsWith('text');
-        //     if (!isText) {
-        //         messageApi.error(`${file.name} is not a text file`);
-        //     }
-        //     return isText || Upload.LIST_IGNORE;
-        // },
+        beforeUpload: file => {
+            const isPyFile = file.type === 'text/x-python-script';
+            if (!isPyFile) {
+                messageApi.error(`${file.name} is not a python script file`);
+            }
+            return isPyFile || Upload.LIST_IGNORE;
+        },
         onChange(info) {
             if (info.file.status === 'done') {
                 messageApi.success(`${info.file.name} file uploaded successfully`);
@@ -65,6 +62,11 @@ export default function ModelDetailDrawer(props) {
                 return file.name;
             }) || [];
 
+        values.model_file_paths =
+            values.model_file?.map(file => {
+                return file.response.data.file_path;
+            }) || [];
+
         delete values.model_file;
 
         const res = await createModel(values);
@@ -94,7 +96,7 @@ export default function ModelDetailDrawer(props) {
                         maxWidth: '85%'
                     }}
                     labelCol={{
-                        span: 8
+                        span: 10
                     }}
                     wrapperCol={{
                         span: 16
@@ -121,7 +123,7 @@ export default function ModelDetailDrawer(props) {
                     </Form.Item>
 
                     <Form.Item
-                        label='Model File'
+                        label='Model File (.py)'
                         name='model_file'
                         valuePropName='fileList'
                         getValueFromEvent={normFile}>
