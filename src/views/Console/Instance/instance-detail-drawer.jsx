@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space } from 'antd';
+import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space, Typography } from 'antd';
 import { createInstance, operateInstance, removeInstance } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
+import { BASE_URL } from '@/constants';
+
+const { Text } = Typography;
 
 export default function InstanceDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList, imageList } = props;
@@ -154,7 +157,9 @@ export default function InstanceDetailDrawer(props) {
                         <Descriptions.Item label='Description'> {description}</Descriptions.Item>
                         <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
                         <Descriptions.Item label='Task'>{task}</Descriptions.Item>
-                        <Descriptions.Item label='URL'>{url}</Descriptions.Item>
+                        <Descriptions.Item label='URL'>
+                            <Text copyable>{`${BASE_URL}:${url?.split(':')[1]}`}</Text>
+                        </Descriptions.Item>
                         <Descriptions.Item label='Status'>
                             {status === 'running' ? (
                                 <div>

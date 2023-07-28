@@ -1,7 +1,8 @@
 import React from 'react';
-import { Card, Badge, message } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
+import { Card, Badge, message, Typography } from 'antd';
 import { BASE_URL } from '@/constants';
+
+const { Text } = Typography;
 
 export default function InstanceCard(props) {
     const { data, onCardClick } = props;
@@ -32,19 +33,7 @@ export default function InstanceCard(props) {
                     )}
                 </div>
                 <div style={{ position: 'absolute', right: '30px', bottom: '20px' }}>
-                    {`${BASE_URL}:${url.split(':')[1]}`}
-                    <CopyOutlined
-                        style={{
-                            marginLeft: 5,
-                            fontSize: 16,
-                            cursor: 'pointer'
-                        }}
-                        onClick={e => {
-                            e.stopPropagation();
-                            navigator.clipboard.writeText(url);
-                            messageApi.success('copied');
-                        }}
-                    />
+                    <Text copyable>{`${BASE_URL}:${url.split(':')[1]}`}</Text>
                 </div>
             </Card>
         </>
