@@ -1,9 +1,11 @@
 import React from 'react';
-import { Col, Row, Button, Table, message } from 'antd';
+import { Col, Row, Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { getTemplateList, removeTemplate } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
+import TemplateCard from './template-card';
+import './index.css';
 
 export default function Template() {
     const { t } = useTranslation();
@@ -16,54 +18,19 @@ export default function Template() {
         return res.data?.list;
     });
 
-    const columns = [
-        {
-            title: t('Name'),
-            dataIndex: 'name',
-            key: 'name'
-        },
-        {
-            title: t('Content'),
-            dataIndex: 'content',
-            key: 'content',
-            render: value => {
-                return value.length > 250 ? value.slice(1, 250) + '...' : value;
-            }
-        },
-        {
-            title: t('Action'),
-            render(rol) {
-                return (
-                    <div>
-                        <Button
-                            type='link'
-                            onClick={() => {
-                                console.log(rol);
-                                history.push(`/console/template/editor?sider=false&data=${rol.content}`);
-                            }}
-                            disabled={rol.title === 'default'}>
-                            {t('Edit')}
-                        </Button>
-                        <Button
-                            type='text'
-                            danger
-                            onClick={async () => {
-                                const res = await removeTemplate({ id: rol.id });
-                                if (res.code === 0) {
-                                    messageApi.success(res.msg);
-                                    refresh();
-                                } else {
-                                    messageApi.error(res.msg);
-                                }
-                            }}
-                            disabled={rol.title === 'default'}>
-                            {t('Remove')}
-                        </Button>
-                    </div>
-                );
-            }
+    const onCardEdit = data => {
+        history.push(`/console/template/editor?sider=false&data=${data.content}`);
+    };
+
+    const onCardRemove = async data => {
+        const res = await removeTemplate({ id: data.id });
+        if (res.code === 0) {
+            messageApi.success(res.msg);
+            refresh();
+        } else {
+            messageApi.error(res.msg);
         }
-    ];
+    };
 
     return (
         <div>
@@ -80,7 +47,16 @@ export default function Template() {
                     </Button>
                 </Col>
             </Row>
-            <Table columns={columns} dataSource={templateList} pagination={{ defaultPageSize: 5 }} rowKey='id' />
+
+            <Row gutter={12}>
+                {templateList?.map((item, index) => {
+                    return (
+                        <Col span={8} key={index}>
+                            <TemplateCard onCardEdit={onCardEdit} onCardRemove={onCardRemove} data={item} />
+                        </Col>
+                    );
+                })}
+            </Row>
         </div>
     );
 }

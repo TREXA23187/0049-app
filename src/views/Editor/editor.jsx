@@ -22,7 +22,7 @@ import { createTemplate } from '@/api/console';
 import ExportModal from '@/components/editor/ExportModal';
 import MenuDropdown from '@/components/editor/MenuDropdown';
 import EditorOperator from '@/components/editor/EditorOperator';
-import Grid from '../../components/editor/grid';
+import Grid from '@/components/editor/grid';
 
 const { Header, Content, Sider } = Layout;
 
@@ -205,7 +205,7 @@ export default function EditorApp(props) {
                     isExport: true,
                     async callback(name, content) {
                         const res = await createTemplate({ name, content });
-                        if (res.code == 0) {
+                        if (res.code === 0) {
                             messageApi.success(res.msg);
                             setIsExportModalOpen(false);
                         }
