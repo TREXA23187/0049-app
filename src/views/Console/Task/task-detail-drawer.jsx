@@ -191,6 +191,15 @@ export default function TaskDetailDrawer(props) {
                                     Training Attributes
                                 </Divider>
 
+                                <Form.Item label='Model Type' name='model_type'>
+                                    <Select
+                                        options={[
+                                            { value: 'classification', label: 'Classification' },
+                                            { value: 'regression', label: 'Regression' }
+                                        ]}
+                                    />
+                                </Form.Item>
+
                                 <Form.Item
                                     label='Model'
                                     name='model'

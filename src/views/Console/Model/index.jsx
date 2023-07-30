@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Button, message, Row, Col } from 'antd';
+import { Table, Button, message, Row, Col, Tag } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
 import { getModelList, removeModel } from '@/api/console';
@@ -26,6 +26,14 @@ export default function Model() {
             title: t('Name'),
             dataIndex: 'name',
             key: 'name'
+        },
+        {
+            title: t('Type'),
+            dataIndex: 'type',
+            key: 'type',
+            render(rol, record) {
+                return rol === 'classification' ? <Tag color='green'>{rol}</Tag> : <Tag color='blue'>{rol}</Tag>;
+            }
         },
         {
             title: t('Model Flie'),

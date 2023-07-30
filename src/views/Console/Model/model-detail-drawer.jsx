@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer, Button, Switch, Form, Input, message, Upload } from 'antd';
+import { Drawer, Button, Switch, Form, Input, message, Upload, Select } from 'antd';
 import { BASE_URL } from '@/constants';
 import { createModel } from '@/api/console';
 import { UploadOutlined } from '@ant-design/icons';
@@ -120,6 +120,23 @@ export default function ModelDetailDrawer(props) {
                             }
                         ]}>
                         <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label='Type'
+                        name='type'
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please select model type'
+                            }
+                        ]}>
+                        <Select
+                            options={[
+                                { value: 'classification', label: 'Classification' },
+                                { value: 'regression', label: 'Regression' }
+                            ]}
+                        />
                     </Form.Item>
 
                     <Form.Item
