@@ -192,57 +192,57 @@ registerConfig.register({
     }
 });
 
-const columns = [
-    {
-        title: 'Col_1',
-        dataIndex: 'col_1',
-        key: 'col_1'
-    },
-    {
-        title: 'Col_2',
-        dataIndex: 'col_2',
-        key: 'col_2'
-    }
-];
-const data = [
-    {
-        key: '1',
-        col_1: 'content_1',
-        col_2: 'content_2'
-    }
-];
+// const columns = [
+//     {
+//         title: 'Col_1',
+//         dataIndex: 'col_1',
+//         key: 'col_1'
+//     },
+//     {
+//         title: 'Col_2',
+//         dataIndex: 'col_2',
+//         key: 'col_2'
+//     }
+// ];
+// const data = [
+//     {
+//         key: '1',
+//         col_1: 'content_1',
+//         col_2: 'content_2'
+//     }
+// ];
+
+// registerConfig.register({
+//     label: 'table',
+//     preview: () => <Table style={{ width: '180px' }} columns={columns} dataSource={data} pagination={false} />,
+//     render: () => <Table style={{ width: '180px' }} columns={columns} dataSource={data} pagination={false} />,
+//     key: 'table',
+//     model: {
+//         default: 'Bound Field'
+//     }
+// });
+
+// registerConfig.register({
+//     label: 'progress',
+//     preview: () => <Progress percent={30} style={{ width: '180px' }} />,
+//     render: () => <Progress percent={30} style={{ width: '180px' }} />,
+//     key: 'progress',
+//     model: {
+//         default: 'Bound Field'
+//     }
+// });
 
 registerConfig.register({
-    label: 'table',
-    preview: () => <Table style={{ width: '180px' }} columns={columns} dataSource={data} pagination={false} />,
-    render: () => <Table style={{ width: '180px' }} columns={columns} dataSource={data} pagination={false} />,
-    key: 'table',
-    model: {
-        default: 'Bound Field'
-    }
-});
-
-registerConfig.register({
-    label: 'progress',
-    preview: () => <Progress percent={30} style={{ width: '180px' }} />,
-    render: () => <Progress percent={30} style={{ width: '180px' }} />,
-    key: 'progress',
-    model: {
-        default: 'Bound Field'
-    }
-});
-
-registerConfig.register({
-    label: 'description',
+    label: 'result',
     preview: () => (
-        <Descriptions title='Description'>
+        <Descriptions title='Result'>
             <Descriptions.Item label='Label'>Value</Descriptions.Item>
         </Descriptions>
     ),
     render: () => (
-        <Descriptions title='Description' size='small' style={{ width: '200px' }}>
+        <Descriptions title='Result' size='small' style={{ width: '200px' }}>
             <Descriptions.Item label='Label'>Value</Descriptions.Item>
         </Descriptions>
     ),
-    key: 'description'
+    key: 'result'
 });

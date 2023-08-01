@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Form, Input, message, Select, Upload, Divider, Descriptions, Badge, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '@/constants';
-import { createTask, getTemplateList, getModelList } from '@/api/console';
+import { createTask, getTemplateList, getModelList, getTaskList } from '@/api/console';
 import { getFileInfo } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
 import { downloadFile } from '@/api/file';
@@ -69,6 +69,12 @@ export default function TaskDetailDrawer(props) {
 
     const { data: modelList } = useRequest(async () => {
         const res = await getModelList();
+
+        return res.data?.list || [];
+    });
+
+    const { data: taskList } = useRequest(async () => {
+        const res = await getTaskList();
 
         return res.data?.list || [];
     });
@@ -148,17 +154,28 @@ export default function TaskDetailDrawer(props) {
 
     const onFinish = async () => {
         const values = form.getFieldsValue();
-        values.data_file_names =
-            values.data_file?.map(file => {
-                return file.name;
-            }) || [];
 
-        values.data_file_paths =
-            values.data_file?.map(file => {
-                return file.response.data.file_path;
-            }) || [];
+        if (taskType == 'training') {
+            values.data_file_names =
+                values.data_file?.map(file => {
+                    return file.name;
+                }) || [];
 
-        delete values.data_file;
+            values.data_file_paths =
+                values.data_file?.map(file => {
+                    return file.response.data.file_path;
+                }) || [];
+
+            delete values.data_file;
+        }
+
+        if (taskType == 'deployment') {
+            const trained_model = JSON.parse(values.trained_model);
+            values.trained_model_file_name = trained_model.name;
+            values.trained_model_file_path = trained_model.path;
+
+            delete values.trained_model;
+        }
 
         const res = await createTask(values);
 
@@ -223,9 +240,6 @@ export default function TaskDetailDrawer(props) {
                                 }
                             ]}>
                             <Select
-                                style={{
-                                    width: 190
-                                }}
                                 options={[
                                     {
                                         value: 'training',
@@ -338,6 +352,27 @@ export default function TaskDetailDrawer(props) {
                                         })}
                                     />
                                 </Form.Item>
+                                <Form.Item
+                                    label='Trained Model'
+                                    name='trained_model'
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please choose a trained model'
+                                        }
+                                    ]}>
+                                    <Select
+                                        options={taskList.map(item => {
+                                            return {
+                                                value: JSON.stringify({
+                                                    name: item.trained_model_file_name,
+                                                    path: item.trained_model_file_path
+                                                }),
+                                                label: item.trained_model_file_name
+                                            };
+                                        })}
+                                    />
+                                </Form.Item>
                             </>
                         )}
 
@@ -385,7 +420,7 @@ export default function TaskDetailDrawer(props) {
                             </Descriptions.Item>
                         )}
                         {type === 'training' && (
-                            <Descriptions.Item label='Trained Model File'>
+                            <Descriptions.Item label='Trained Model'>
                                 {trained_model_file_path && (
                                     <Button
                                         type='link'
