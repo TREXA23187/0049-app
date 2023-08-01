@@ -52,6 +52,7 @@ export default function TaskDetailDrawer(props) {
     } = data;
 
     const [taskType, setTaskType] = useState();
+    const [modelType, setModelType] = useState();
     const [fileCols, setFileCols] = useState([]);
     const [currentFilePath, setCurrentFilePath] = useState('');
 
@@ -237,6 +238,7 @@ export default function TaskDetailDrawer(props) {
                                             { value: 'classification', label: 'Classification' },
                                             { value: 'regression', label: 'Regression' }
                                         ]}
+                                        onChange={setModelType}
                                     />
                                 </Form.Item>
 
@@ -250,12 +252,14 @@ export default function TaskDetailDrawer(props) {
                                         }
                                     ]}>
                                     <Select
-                                        options={modelList.map(item => {
-                                            return {
-                                                value: item.name,
-                                                label: item.name
-                                            };
-                                        })}
+                                        options={modelList
+                                            .filter(model => !modelType || model.type == modelType)
+                                            .map(item => {
+                                                return {
+                                                    value: item.name,
+                                                    label: item.name
+                                                };
+                                            })}
                                     />
                                 </Form.Item>
                                 <Form.Item
