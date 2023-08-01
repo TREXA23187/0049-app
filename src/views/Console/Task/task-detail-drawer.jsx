@@ -6,10 +6,50 @@ import { createTask, getTemplateList, getModelList } from '@/api/console';
 import { getFileInfo } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
 import { downloadFile } from '@/api/file';
+import { downloadLink } from '@/utils';
+
+function statusBadge(rol) {
+    if (rol === 'pending') {
+        return (
+            <div>
+                <Badge status='default' /> <span>{rol}</span>
+            </div>
+        );
+    } else if (rol === 'running') {
+        return (
+            <div>
+                <Badge status='processing' /> <span>{rol}</span>
+            </div>
+        );
+    } else if (rol === 'completed') {
+        return (
+            <div>
+                <Badge status='success' /> <span>{rol}</span>
+            </div>
+        );
+    } else {
+        return (
+            <div>
+                <Badge status='error' /> <span>{rol}</span>
+            </div>
+        );
+    }
+}
 
 export default function TaskDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
-    const { name, model, status, created_at, type, data_file_name, data_file_path } = data;
+    const {
+        name,
+        model,
+        template,
+        status,
+        created_at,
+        type,
+        data_file_name,
+        data_file_path,
+        trained_model_file_name,
+        trained_model_file_path
+    } = data;
 
     const [taskType, setTaskType] = useState();
     const [fileCols, setFileCols] = useState([]);
@@ -298,51 +338,57 @@ export default function TaskDetailDrawer(props) {
                         <Descriptions.Item label='Type:'>
                             <Tag color={type === 'training' ? 'green' : 'blue'}>{type}</Tag>
                         </Descriptions.Item>
-                        <Descriptions.Item label='Status'>
-                            {status === 'running' ? (
-                                <div>
-                                    <Badge status='success' /> <span>{status}</span>{' '}
-                                </div>
-                            ) : (
-                                <div>
-                                    <Badge status='error' /> <span>{status}</span>
-                                </div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item label='Model:'>{model}</Descriptions.Item>
+                        <Descriptions.Item label='Status'>{statusBadge(status)}</Descriptions.Item>
+                        {type == 'training' ? (
+                            <Descriptions.Item label='Model:'>{model}</Descriptions.Item>
+                        ) : (
+                            <Descriptions.Item label='Template:'>{template}</Descriptions.Item>
+                        )}
                         <Descriptions.Item label='Created At'>{new Date(created_at).toString()}</Descriptions.Item>
-                        <Descriptions.Item label='Data File'>
-                            <Button
-                                type='link'
-                                size='small'
-                                onClick={async () => {
-                                    const res = await downloadFile({
-                                        file_name: data_file_name,
-                                        file_path: data_file_path
-                                    });
-
-                                    if (res.code === -1) {
-                                        messageApi.error(res.msg);
-                                    } else {
-                                        const blob = new Blob([res], {
-                                            type: 'application/octet-stream'
+                        {type == 'training' && (
+                            <Descriptions.Item label='Data File'>
+                                <Button
+                                    type='link'
+                                    size='small'
+                                    onClick={async () => {
+                                        const res = await downloadFile({
+                                            file_name: data_file_name,
+                                            file_path: data_file_path
                                         });
 
-                                        const link = document.createElement('a');
+                                        if (res.code === -1) {
+                                            messageApi.error(res.msg);
+                                        } else {
+                                            downloadLink(res, data_file_name);
+                                        }
+                                    }}>
+                                    {data_file_name}
+                                </Button>
+                            </Descriptions.Item>
+                        )}
+                        {type == 'training' && (
+                            <Descriptions.Item label='Trained Model File'>
+                                {trained_model_file_path && (
+                                    <Button
+                                        type='link'
+                                        size='small'
+                                        onClick={async () => {
+                                            const res = await downloadFile({
+                                                file_name: trained_model_file_name,
+                                                file_path: trained_model_file_path
+                                            });
 
-                                        link.download = data_file_name;
-
-                                        link.href = URL.createObjectURL(blob);
-                                        document.body.appendChild(link);
-                                        link.click();
-
-                                        URL.revokeObjectURL(link.href);
-                                        document.body.removeChild(link);
-                                    }
-                                }}>
-                                {data_file_name}
-                            </Button>
-                        </Descriptions.Item>
+                                            if (res.code === -1) {
+                                                messageApi.error(res.msg);
+                                            } else {
+                                                downloadLink(res, trained_model_file_name);
+                                            }
+                                        }}>
+                                        {trained_model_file_name}
+                                    </Button>
+                                )}
+                            </Descriptions.Item>
+                        )}
                     </Descriptions>
                 )}
             </Drawer>

@@ -39,15 +39,31 @@ export default function Task() {
             dataIndex: 'status',
             key: 'status',
             render(rol) {
-                return rol === 'running' ? (
-                    <div>
-                        <Badge status='success' /> <span>{rol}</span>
-                    </div>
-                ) : (
-                    <div>
-                        <Badge status='error' /> <span>{rol}</span>
-                    </div>
-                );
+                if (rol === 'pending') {
+                    return (
+                        <div>
+                            <Badge status='default' /> <span>{rol}</span>
+                        </div>
+                    );
+                } else if (rol === 'running') {
+                    return (
+                        <div>
+                            <Badge status='processing' /> <span>{rol}</span>
+                        </div>
+                    );
+                } else if (rol === 'completed') {
+                    return (
+                        <div>
+                            <Badge status='success' /> <span>{rol}</span>
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <Badge status='error' /> <span>{rol}</span>
+                        </div>
+                    );
+                }
             }
         },
         {

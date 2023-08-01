@@ -47,8 +47,6 @@ export default function ConsoleLayout(props) {
                             height: '100%',
                             minWidth: '160px'
                         }}
-                        defaultSelectedKeys={['1']}
-                        defaultOpenKeys={['sub1']}
                         mode='inline'
                         items={items}
                         selectedKeys={[currentMenu]}
