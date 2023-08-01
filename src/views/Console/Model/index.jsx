@@ -18,7 +18,7 @@ export default function Model() {
     const { data: modelList, refresh } = useRequest(async () => {
         const res = await getModelList();
 
-        return res.data?.list;
+        return res.data?.list.reverse();
     });
 
     const columns = [
@@ -144,10 +144,7 @@ export default function Model() {
                 open={drawerOpen}
                 isEdit={isEditDrawer}
                 refreshList={refresh}
-                onClose={() => {
-                    setCurrentModelData({});
-                    setDrawOpen(false);
-                }}
+                onClose={() => setDrawOpen(false)}
             />
         </div>
     );

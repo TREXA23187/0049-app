@@ -16,6 +16,10 @@ export default function InstanceDetailDrawer(props) {
         setStatus(data.status);
     }, [data]);
 
+    useEffect(() => {
+        form.setFieldsValue({ ...form.getFieldValue, ...data });
+    }, [data]);
+
     const { loading, run: operate } = useRequest(
         async data => {
             const res = await operateInstance(data);
@@ -30,6 +34,11 @@ export default function InstanceDetailDrawer(props) {
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
 
+    const clearDataAndClose = () => {
+        form.resetFields();
+        onClose();
+    };
+
     const onFinish = async () => {
         const values = form.getFieldsValue();
 
@@ -37,8 +46,9 @@ export default function InstanceDetailDrawer(props) {
 
         if (res.code === 0) {
             messageApi.success(`instance created successfully`);
+
             refreshList();
-            onClose();
+            clearDataAndClose();
         } else {
             messageApi.error(res.msg);
         }
@@ -50,7 +60,7 @@ export default function InstanceDetailDrawer(props) {
             <Drawer
                 title={isEdit ? 'Create Instance' : 'Instance Detail'}
                 placement='right'
-                onClose={onClose}
+                onClose={clearDataAndClose}
                 open={open}
                 extra={
                     !isEdit &&
@@ -64,7 +74,7 @@ export default function InstanceDetailDrawer(props) {
                                     if (res.code === 0) {
                                         messageApi.success('removed');
                                         refreshList();
-                                        onClose();
+                                        clearDataAndClose();
                                     } else {
                                         messageApi.error('remove failed');
                                     }

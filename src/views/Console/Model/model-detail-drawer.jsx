@@ -17,6 +17,10 @@ export default function ModelDetailDrawer(props) {
         setShowGithub(data.is_github ?? false);
     }, [data.is_github]);
 
+    useEffect(() => {
+        form.setFieldsValue({ ...form.getFieldValue, ...data });
+    }, [data]);
+
     const fileUploadProps = {
         action: `http://${BASE_URL}:3000/api/v1/file/upload?type=model`,
         beforeUpload: file => {
@@ -51,21 +55,27 @@ export default function ModelDetailDrawer(props) {
         }
     };
 
+    const clearDataAndClose = () => {
+        form.resetFields();
+        setShowGithub(false);
+        setFileList([]);
+
+        onClose();
+    };
+
     const onFinish = async () => {
         const values = {
             ...form.getFieldsValue(),
             is_github: showGithub
         };
 
-        values.model_file_names =
-            values.model_file?.map(file => {
-                return file.name;
-            }) || [];
+        values.model_file_names = values.model_file?.map(file => {
+            return file.name;
+        }) || [''];
 
-        values.model_file_paths =
-            values.model_file?.map(file => {
-                return file.response.data.file_path;
-            }) || [];
+        values.model_file_paths = values.model_file?.map(file => {
+            return file.response.data.file_path;
+        }) || [''];
 
         delete values.model_file;
 
@@ -75,8 +85,9 @@ export default function ModelDetailDrawer(props) {
         } else {
             messageApi.error(res.msg);
         }
+
         refreshList();
-        onClose();
+        clearDataAndClose();
     };
 
     const normFile = e => {
@@ -89,7 +100,11 @@ export default function ModelDetailDrawer(props) {
     return (
         <>
             {contextHolder}
-            <Drawer title={isEdit ? 'Edit Model' : 'Create Model'} placement='right' onClose={onClose} open={open}>
+            <Drawer
+                title={isEdit ? 'Edit Model' : 'Create Model'}
+                placement='right'
+                onClose={clearDataAndClose}
+                open={open}>
                 <Form
                     name='basic'
                     style={{
@@ -101,14 +116,8 @@ export default function ModelDetailDrawer(props) {
                     wrapperCol={{
                         span: 16
                     }}
-                    initialValues={{
-                        ...data
-                    }}
                     form={form}
                     onFinish={onFinish}
-                    onFinishFailed={errorInfo => {
-                        console.log('Failed:', errorInfo);
-                    }}
                     autoComplete='off'>
                     <Form.Item
                         label='Name'

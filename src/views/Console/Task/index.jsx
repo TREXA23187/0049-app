@@ -124,7 +124,6 @@ export default function Task() {
                 isEdit={isEditDrawer}
                 refreshList={refresh}
                 onClose={() => {
-                    setCurrentTaskData({});
                     setDrawOpen(false);
                 }}
             />

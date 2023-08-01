@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Drawer, Descriptions, Button, Select, Form, Input, message } from 'antd';
 import { getTaskList, createImage } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
@@ -13,8 +13,17 @@ export default function ImageDetailDrawer(props) {
         return res.data?.list || [];
     });
 
+    useEffect(() => {
+        form.setFieldsValue({ ...form.getFieldValue, ...data });
+    }, [data]);
+
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
+
+    const clearDataAndClose = () => {
+        form.resetFields();
+        onClose();
+    };
 
     const onFinish = async () => {
         const values = form.getFieldsValue();
@@ -24,7 +33,7 @@ export default function ImageDetailDrawer(props) {
         if (res.code === 0) {
             messageApi.success(res.msg);
             refreshList();
-            onClose();
+            clearDataAndClose();
 
             showBuildingAlert(values.repository);
         } else {
@@ -35,7 +44,11 @@ export default function ImageDetailDrawer(props) {
     return (
         <>
             {contextHolder}
-            <Drawer title={isEdit ? 'Create Image' : 'Image Detail'} placement='right' onClose={onClose} open={open}>
+            <Drawer
+                title={isEdit ? 'Create Image' : 'Image Detail'}
+                placement='right'
+                onClose={clearDataAndClose}
+                open={open}>
                 {isEdit ? (
                     <Form
                         name='create_image_form'

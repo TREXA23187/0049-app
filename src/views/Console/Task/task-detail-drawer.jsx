@@ -92,6 +92,10 @@ export default function TaskDetailDrawer(props) {
         })();
     }, [currentFilePath]);
 
+    useEffect(() => {
+        form.setFieldsValue({ ...form.getFieldValue, ...data });
+    }, [data]);
+
     const fileUploadProps = {
         action: `http://${BASE_URL}:3000/api/v1/file/upload?type=data`,
         headers: {
@@ -137,6 +141,11 @@ export default function TaskDetailDrawer(props) {
         return e?.fileList;
     };
 
+    const clearDataAndClose = () => {
+        form.resetFields();
+        onClose();
+    };
+
     const onFinish = async () => {
         const values = form.getFieldsValue();
         values.data_file_names =
@@ -155,8 +164,9 @@ export default function TaskDetailDrawer(props) {
 
         if (res.code === 0) {
             messageApi.success('task created successfully');
+
             refreshList();
-            onClose();
+            clearDataAndClose();
         } else {
             messageApi.error(res.msg);
         }
@@ -165,7 +175,11 @@ export default function TaskDetailDrawer(props) {
     return (
         <>
             {contextHolder}
-            <Drawer title={isEdit ? 'Create Task' : 'Task Detail'} placement='right' onClose={onClose} open={open}>
+            <Drawer
+                title={isEdit ? 'Create Task' : 'Task Detail'}
+                placement='right'
+                onClose={clearDataAndClose}
+                open={open}>
                 {isEdit ? (
                     <Form
                         name='basic'
@@ -253,7 +267,7 @@ export default function TaskDetailDrawer(props) {
                                     ]}>
                                     <Select
                                         options={modelList
-                                            .filter(model => !modelType || model.type == modelType)
+                                            .filter(model => !modelType || model.type === modelType)
                                             .map(item => {
                                                 return {
                                                     value: item.name,
@@ -343,13 +357,13 @@ export default function TaskDetailDrawer(props) {
                             <Tag color={type === 'training' ? 'green' : 'blue'}>{type}</Tag>
                         </Descriptions.Item>
                         <Descriptions.Item label='Status'>{statusBadge(status)}</Descriptions.Item>
-                        {type == 'training' ? (
+                        {type === 'training' ? (
                             <Descriptions.Item label='Model:'>{model}</Descriptions.Item>
                         ) : (
                             <Descriptions.Item label='Template:'>{template}</Descriptions.Item>
                         )}
                         <Descriptions.Item label='Created At'>{new Date(created_at).toString()}</Descriptions.Item>
-                        {type == 'training' && (
+                        {type === 'training' && (
                             <Descriptions.Item label='Data File'>
                                 <Button
                                     type='link'
@@ -370,7 +384,7 @@ export default function TaskDetailDrawer(props) {
                                 </Button>
                             </Descriptions.Item>
                         )}
-                        {type == 'training' && (
+                        {type === 'training' && (
                             <Descriptions.Item label='Trained Model File'>
                                 {trained_model_file_path && (
                                     <Button
