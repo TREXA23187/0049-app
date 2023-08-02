@@ -142,7 +142,7 @@ export default function Console() {
                             </Button>
                         </Col>
                     </Row>
-                    <Row gutter={12}>
+                    <Row gutter={12} style={{ height: '80vh', overflow: 'scroll' }}>
                         {instanceList?.map((item, index) => {
                             return (
                                 <Col span={8} key={index}>

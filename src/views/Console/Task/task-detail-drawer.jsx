@@ -155,7 +155,7 @@ export default function TaskDetailDrawer(props) {
     const onFinish = async () => {
         const values = form.getFieldsValue();
 
-        if (taskType == 'training') {
+        if (taskType === 'training') {
             values.data_file_names =
                 values.data_file?.map(file => {
                     return file.name;
@@ -169,7 +169,7 @@ export default function TaskDetailDrawer(props) {
             delete values.data_file;
         }
 
-        if (taskType == 'deployment') {
+        if (taskType === 'deployment') {
             const trained_model = JSON.parse(values.trained_model);
             values.trained_model_file_name = trained_model.name;
             values.trained_model_file_path = trained_model.path;

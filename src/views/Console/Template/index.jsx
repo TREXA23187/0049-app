@@ -19,7 +19,7 @@ export default function Template() {
     });
 
     const onCardEdit = data => {
-        history.push(`/console/template/editor?sider=false&data=${data.content}`);
+        history.push(`/console/template/editor?sider=false&template=${data.id}`);
     };
 
     const onCardRemove = async data => {
@@ -48,7 +48,7 @@ export default function Template() {
                 </Col>
             </Row>
 
-            <Row gutter={12}>
+            <Row gutter={12} style={{ height: '80vh', overflow: 'scroll' }}>
                 {templateList?.map((item, index) => {
                     return (
                         <Col span={8} key={index}>

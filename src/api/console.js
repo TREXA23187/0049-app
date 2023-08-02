@@ -1,4 +1,4 @@
-import { get, post, del } from '@/utils/request';
+import { get, post, del, put } from '@/utils/request';
 
 export function createInstance(data) {
     return post('api/v1/console/instance', data);
@@ -24,6 +24,12 @@ export function getTemplateList() {
 }
 export function removeTemplate(params) {
     return del('api/v1/console/template', params);
+}
+export function getTemplateInfo(params) {
+    return get('api/v1/console/template/info', params);
+}
+export function updateTemplate(data) {
+    return put('api/v1/console/template', data);
 }
 
 export function createModel(data) {

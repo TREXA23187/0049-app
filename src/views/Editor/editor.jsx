@@ -18,16 +18,20 @@ import useMenuDragger from './useMenuDragger';
 import { useFocus } from './useFocus';
 import { useBlockDragger } from './useBlockDragger';
 import { useCommand } from './useCommand';
-import { createTemplate } from '@/api/console';
+import { createTemplate, updateTemplate } from '@/api/console';
 import ExportModal from '@/components/editor/ExportModal';
 import MenuDropdown from '@/components/editor/MenuDropdown';
 import EditorOperator from '@/components/editor/EditorOperator';
 import Grid from '@/components/editor/grid';
+import { useLocation } from 'react-router-dom';
 
 const { Header, Content, Sider } = Layout;
 
 export default function EditorApp(props) {
     const { data, config, updateData, globalData, updateGlobalData } = props;
+
+    let query = new URLSearchParams(useLocation().search);
+    const templateId = JSON.parse(query.get('template'));
 
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [exportModalOption, setExportModalOption] = useState({});
@@ -198,20 +202,27 @@ export default function EditorApp(props) {
         {
             label: 'Save',
             icon: <SaveOutlined />,
-            handler: () => {
-                setExportModalOption({
-                    title: 'Export JSON',
-                    content: JSON.stringify(data),
-                    isExport: true,
-                    async callback(name, content) {
-                        const res = await createTemplate({ name, content });
-                        if (res.code === 0) {
-                            messageApi.success(res.msg);
-                            setIsExportModalOpen(false);
+            handler: async () => {
+                if (!templateId) {
+                    setExportModalOption({
+                        title: 'Export JSON',
+                        content: JSON.stringify(data),
+                        isExport: true,
+                        async callback(name, content) {
+                            const res = await createTemplate({ name, content });
+                            if (res.code === 0) {
+                                messageApi.success(res.msg);
+                                setIsExportModalOpen(false);
+                            }
                         }
+                    });
+                    setIsExportModalOpen(true);
+                } else {
+                    const res = await updateTemplate({ id: templateId, content: JSON.stringify(data) });
+                    if (res.code === 0) {
+                        messageApi.success(res.msg);
                     }
-                });
-                setIsExportModalOpen(true);
+                }
             }
         },
         {
@@ -277,7 +288,7 @@ export default function EditorApp(props) {
 
     const rightSiderTabItems = [
         {
-            key: '1',
+            key: 'attribute',
             label: `Attribute`,
             children: (
                 <div style={{ padding: '10px' }}>
@@ -301,7 +312,7 @@ export default function EditorApp(props) {
             )
         },
         {
-            key: '2',
+            key: 'event',
             label: `Event`,
             children: `Content of Tab Event`
         }
@@ -331,7 +342,7 @@ export default function EditorApp(props) {
                     );
                 })}
             </div>
-            <div style={{ position: 'absolute', right: 10, top: 10 }}>
+            <div style={{ position: 'absolute', right: 10, top: 60 }}>
                 <Button type='primary' onClick={() => setCanEdit(true)} ghost>
                     Back to Edit
                 </Button>
