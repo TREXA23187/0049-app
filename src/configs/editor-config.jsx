@@ -92,11 +92,17 @@ registerConfig.register({
         height: true
     },
     preview: () => <Button>button preview</Button>,
-    render: ({ props, size }) => (
-        <Button type={props.type} size={props.size} style={{ width: size.width + 'px', height: size.height + 'px' }}>
-            {props.text || 'render button'}
-        </Button>
-    ),
+    render: ({ props, size, event }) => {
+        return (
+            <Button
+                type={props.type}
+                size={props.size}
+                style={{ width: size.width + 'px', height: size.height + 'px' }}
+                {...event?.url}>
+                {props.text || 'render button'}
+            </Button>
+        );
+    },
     key: 'button',
     props: {
         text: createInputProp('button text', 'text'),
@@ -115,6 +121,9 @@ registerConfig.register({
             { label: 'large', value: 'large' }
         ]),
         submit: createSwitchProp('submit button', 'submit', true)
+    },
+    event: {
+        url: 'Bound URL'
     }
 });
 
@@ -239,10 +248,19 @@ registerConfig.register({
             <Descriptions.Item label='Label'>Value</Descriptions.Item>
         </Descriptions>
     ),
-    render: () => (
-        <Descriptions title='Result' size='small' style={{ width: '200px' }}>
-            <Descriptions.Item label='Label'>Value</Descriptions.Item>
-        </Descriptions>
-    ),
+    render: ({ globalResult }) => {
+        return (
+            <Descriptions title='Result' size='small' style={{ width: '200px' }}>
+                {globalResult &&
+                    Object.keys(globalResult).map(key => {
+                        return (
+                            <Descriptions.Item label={key} key={key}>
+                                {globalResult[key]}
+                            </Descriptions.Item>
+                        );
+                    })}
+            </Descriptions>
+        );
+    },
     key: 'result'
 });

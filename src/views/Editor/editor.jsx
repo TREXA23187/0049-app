@@ -24,11 +24,12 @@ import MenuDropdown from '@/components/editor/MenuDropdown';
 import EditorOperator from '@/components/editor/EditorOperator';
 import Grid from '@/components/editor/grid';
 import { useLocation } from 'react-router-dom';
+import EditorEvent from '@/components/editor/EditorEvent';
 
 const { Header, Content, Sider } = Layout;
 
 export default function EditorApp(props) {
-    const { data, config, updateData, globalData, updateGlobalData } = props;
+    const { data, config, updateData, globalData, updateGlobalData, globalResult, updateGlobalResult } = props;
 
     let query = new URLSearchParams(useLocation().search);
     const templateId = JSON.parse(query.get('template'));
@@ -314,7 +315,26 @@ export default function EditorApp(props) {
         {
             key: 'event',
             label: `Event`,
-            children: `Content of Tab Event`
+            children: (
+                <div style={{ padding: '10px' }}>
+                    <div className='demo-logo-vertical' />
+                    <EditorEvent
+                        getLastSelectedBlock={getLastSelectedBlock}
+                        lastSelectedIndex={lastSelectedIndex}
+                        data={data}
+                        config={config}
+                        editData={lastSelectedIndex > -1 ? getLastSelectedBlock() : data.container}
+                        updateContainer={newContainer => {
+                            commands.updateContainer(newContainer);
+                        }}
+                        updateBlock={(newBlock, oldBlock) => {
+                            commands.updateBlock(newBlock, oldBlock);
+                        }}
+                        globalData={globalData}
+                        updateGlobalData={updateGlobalData}
+                    />
+                </div>
+            )
         }
     ];
 
@@ -338,6 +358,8 @@ export default function EditorApp(props) {
                             onMouseDown={e => blockMouseDown(e, block)}
                             globalData={globalData}
                             updateGlobalData={updateGlobalData}
+                            globalResult={globalResult}
+                            updateGlobalResult={updateGlobalResult}
                         />
                     );
                 })}
@@ -440,6 +462,8 @@ export default function EditorApp(props) {
                                         onContextMenu={e => onContextMenuBlock(e, block)}
                                         globalData={globalData}
                                         updateGlobalData={updateGlobalData}
+                                        globalResult={globalResult}
+                                        updateGlobalResult={updateGlobalResult}
                                     />
                                 );
                             })}
@@ -466,7 +490,7 @@ export default function EditorApp(props) {
             </Layout>
 
             <Sider theme='light' width={'20%'}>
-                <Tabs defaultActiveKey='1' items={rightSiderTabItems} style={{ padding: '20px' }}></Tabs>
+                <Tabs items={rightSiderTabItems} style={{ padding: '20px' }}></Tabs>
             </Sider>
         </Layout>
     );

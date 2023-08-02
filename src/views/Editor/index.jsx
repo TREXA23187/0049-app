@@ -28,6 +28,7 @@ export default function Editor() {
 
     const [data, setData] = useState(jsonData);
     const [globalData, setGlobalData] = useState({});
+    const [globalResult, setGlobalResult] = useState({});
 
     return (
         <div style={{ height: '75%' }}>
@@ -37,6 +38,8 @@ export default function Editor() {
                 config={config}
                 globalData={globalData}
                 updateGlobalData={setGlobalData}
+                globalResult={globalResult}
+                updateGlobalResult={setGlobalResult}
             />
         </div>
     );

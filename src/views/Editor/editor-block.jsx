@@ -1,12 +1,25 @@
 import React, { useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import deepcopy from 'deepcopy';
+import axios from 'axios';
+import { post } from '@/utils/request';
+
 // import BlockResize from './block-resize';
 
 export default function EditorBlock(props) {
     const blockRef = useRef();
 
-    const { block, isPreview, updateBlock, onMouseDown, onContextMenu, globalData, updateGlobalData } = props;
+    const {
+        block,
+        isPreview,
+        updateBlock,
+        onMouseDown,
+        onContextMenu,
+        globalData,
+        updateGlobalData,
+        globalResult,
+        updateGlobalResult
+    } = props;
 
     const blockStyles = {
         top: `${block.top}px`,
@@ -81,9 +94,27 @@ export default function EditorBlock(props) {
                     prev[modelName] = { ...prev[modelName], onPreview };
                 }
             }
-
             return prev;
-        }, {})
+        }, {}),
+        event: Object.keys(component.event || {}).reduce((prev, eventName) => {
+            let propName = block.event[eventName];
+
+            if (propName) {
+                prev[eventName] = {
+                    onClick: async () => {
+                        // const instance = axios.create({
+                        //     baseURL: block.event.url,
+                        //     timeout: 30000
+                        // });
+
+                        const res = await post('api/v1/users/mock', globalData);
+                        updateGlobalResult(res);
+                    }
+                };
+            }
+            return prev;
+        }, {}),
+        globalResult: globalResult
     });
 
     // const onChange = ({ fileList: newFileList }) => {
