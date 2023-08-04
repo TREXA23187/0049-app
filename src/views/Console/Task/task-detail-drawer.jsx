@@ -304,7 +304,7 @@ export default function TaskDetailDrawer(props) {
 
                                 {fileList.length > 0 && (
                                     <Form.Item
-                                        label='Label'
+                                        label='Target Label'
                                         name='training_label'
                                         rules={[
                                             {
@@ -313,6 +313,39 @@ export default function TaskDetailDrawer(props) {
                                             }
                                         ]}>
                                         <Select
+                                            style={{
+                                                width: 190
+                                            }}
+                                            options={fileCols?.map(item => {
+                                                return {
+                                                    value: item,
+                                                    label: item
+                                                };
+                                            })}
+                                            onChange={value => {
+                                                form.setFieldValue(
+                                                    'training_data_label',
+                                                    fileCols.filter(item => {
+                                                        return item !== value;
+                                                    })
+                                                );
+                                            }}
+                                        />
+                                    </Form.Item>
+                                )}
+                                {fileList.length > 0 && (
+                                    <Form.Item
+                                        label='Data Label'
+                                        name='training_data_label'
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input training data'
+                                            }
+                                        ]}>
+                                        <Select
+                                            mode='multiple'
+                                            allowClear
                                             style={{
                                                 width: 190
                                             }}
