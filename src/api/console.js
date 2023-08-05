@@ -15,6 +15,12 @@ export function operateInstance(data) {
 export function removeInstance(params) {
     return del('api/v1/console/instance', params);
 }
+export function createInstanceLink(data) {
+    return post('api/v1/console/instance/link', data);
+}
+export function getInstanceLinkInfo(data) {
+    return post('api/v1/console/instance/link/info', data);
+}
 
 export function createTemplate(data) {
     return post('api/v1/console/template', data);

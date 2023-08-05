@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space, Typography } from 'antd';
+import { LinkOutlined } from '@ant-design/icons';
 import { createInstance, operateInstance, removeInstance } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import { BASE_URL } from '@/constants';
+import CreateLinkModal from './create-link-modal';
 
 const { Text } = Typography;
 
 export default function InstanceDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList, imageList } = props;
-    const { title, description, instance_id, task, url, created_at } = data;
+    const { title, description, instance_id, task, url, created_at, task_type } = data;
 
     const [status, setStatus] = useState(data.status);
 
@@ -54,9 +56,21 @@ export default function InstanceDetailDrawer(props) {
         }
     };
 
+    const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
+
+    const handleCreateLinkModelOk = () => {
+        setIsCreateLinkModalOpen(false);
+    };
+
     return (
         <>
             {contextHolder}
+            <CreateLinkModal
+                isModalOpen={isCreateLinkModalOpen}
+                handleOk={handleCreateLinkModelOk}
+                data={data}
+                handleCancel={() => setIsCreateLinkModalOpen(false)}
+            />
             <Drawer
                 title={isEdit ? 'Create Instance' : 'Instance Detail'}
                 placement='right'
@@ -168,7 +182,19 @@ export default function InstanceDetailDrawer(props) {
                         <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
                         <Descriptions.Item label='Task'>{task}</Descriptions.Item>
                         <Descriptions.Item label='URL'>
-                            <Text copyable>{`${BASE_URL}:${url?.split(':')[1]}`}</Text>
+                            {task_type === 'training' ? (
+                                <Text copyable>{`${BASE_URL}:${url?.split(':')[1]}`}</Text>
+                            ) : (
+                                <Button
+                                    type='link'
+                                    size='small'
+                                    onClick={() => {
+                                        setIsCreateLinkModalOpen(true);
+                                    }}>
+                                    Create Link
+                                    <LinkOutlined />
+                                </Button>
+                            )}
                         </Descriptions.Item>
                         <Descriptions.Item label='Status'>
                             {status === 'running' ? (

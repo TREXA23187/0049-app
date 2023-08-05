@@ -30,9 +30,11 @@ export default function InstanceCard(props) {
                             </div>
                         )}
                     </div>
-                    <div style={{ position: 'absolute', right: '30px', bottom: '20px' }}>
-                        <Text copyable>{`${BASE_URL}:${url.split(':')[1]}`}</Text>
-                    </div>
+                    {task_type === 'training' && (
+                        <div style={{ position: 'absolute', right: '30px', bottom: '20px' }}>
+                            <Text copyable>{`${BASE_URL}:${url.split(':')[1]}`}</Text>
+                        </div>
+                    )}
                 </Card>
             </Badge.Ribbon>
         </>

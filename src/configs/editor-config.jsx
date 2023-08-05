@@ -71,7 +71,7 @@ registerConfig.register({
 
         const hexString = colorHex ? (typeof colorHex === 'string' ? colorHex : colorHex.toHexString()) : '#000';
 
-        return <span style={{ color: hexString, fontSize: props.size }}>{props.text || 'render text'}</span>;
+        return <span style={{ color: hexString, fontSize: props.size }}>{props.text || 'text'}</span>;
     },
     key: 'text',
     props: {
@@ -99,7 +99,7 @@ registerConfig.register({
                 size={props.size}
                 style={{ width: size.width + 'px', height: size.height + 'px' }}
                 {...event?.url}>
-                {props.text || 'render button'}
+                {props.text || 'button'}
             </Button>
         );
     },
@@ -133,9 +133,9 @@ registerConfig.register({
         width: true
     },
     preview: () => <Input placeholder='input preview'></Input>,
-    render: ({ model, size }) => (
-        <Input placeholder='render input' {...model?.default} style={{ width: size.width + 'px' }}></Input>
-    ),
+    render: ({ model, size }) => {
+        return <Input placeholder='input' {...model?.default} style={{ width: size.width + 'px' }}></Input>;
+    },
     key: 'input',
     model: {
         default: 'Bound Field'
@@ -249,7 +249,6 @@ registerConfig.register({
         </Descriptions>
     ),
     render: ({ globalResult }) => {
-        console.log(globalResult);
         return (
             <Descriptions title='Result' size='small' style={{ width: '200px' }} layout='vertical'>
                 {globalResult &&

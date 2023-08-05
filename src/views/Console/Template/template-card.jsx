@@ -10,11 +10,6 @@ export default function TemplateCard(props) {
 
     const content = JSON.parse(data.content);
 
-    const containerStyles = {
-        // width: content.container.width * 0.5 + 'px',
-        height: content.container.height * 0.4 + 'px'
-    };
-
     return (
         <>
             <Card
@@ -28,7 +23,7 @@ export default function TemplateCard(props) {
                 ]}>
                 <div
                     style={{
-                        ...containerStyles,
+                        height: content.container.height * 0.4 + 'px',
                         position: 'relative'
                     }}>
                     <Grid />
