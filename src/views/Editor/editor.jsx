@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Layout, theme, message, Button, Tabs } from 'antd';
+import { useHistory } from 'react-router-dom';
 import {
     RollbackOutlined,
     ImportOutlined,
@@ -33,6 +34,8 @@ export default function EditorApp(props) {
 
     let query = new URLSearchParams(useLocation().search);
     const templateId = JSON.parse(query.get('template'));
+
+    const history = useHistory();
 
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [exportModalOption, setExportModalOption] = useState({});
@@ -212,8 +215,11 @@ export default function EditorApp(props) {
                         async callback(name, content) {
                             const res = await createTemplate({ name, content });
                             if (res.code === 0) {
+                                history.replace(`/console/template/editor?sider=false&template=${res.data.templateId}`);
                                 messageApi.success(res.msg);
                                 setIsExportModalOpen(false);
+                            } else {
+                                messageApi.error(res.msg);
                             }
                         }
                     });

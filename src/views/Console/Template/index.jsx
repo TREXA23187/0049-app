@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Row, Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { getTemplateList, removeTemplate } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
-import { useTranslation } from 'react-i18next';
 import TemplateCard from './template-card';
 import './index.css';
+import SelectTemplateModal from './select-template_modal';
 
 export default function Template() {
-    const { t } = useTranslation();
     const history = useHistory();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -32,6 +31,11 @@ export default function Template() {
         }
     };
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div>
             {contextHolder}
@@ -41,7 +45,8 @@ export default function Template() {
                         type='primary'
                         style={{ margin: '0 10px' }}
                         onClick={() => {
-                            history.push('/console/template/editor?sider=false');
+                            // history.push('/console/template/editor?sider=false');
+                            setIsModalOpen(true);
                         }}>
                         New Template
                     </Button>
@@ -57,6 +62,11 @@ export default function Template() {
                     );
                 })}
             </Row>
+            <SelectTemplateModal
+                isModalOpen={isModalOpen}
+                handleOk={handleOk}
+                handleCancel={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }

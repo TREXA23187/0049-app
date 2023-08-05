@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import EditorApp from './editor';
 import jsonData from '@/data/data.json';
@@ -8,6 +8,10 @@ import { getTemplateInfo } from '@/api/console';
 
 export default function Editor() {
     let query = new URLSearchParams(useLocation().search);
+
+    const defaultContent = useMemo(() => {
+        return JSON.parse(query.get('content'));
+    }, []);
 
     const { data: templateContent } = useRequest(async () => {
         const templateId = JSON.parse(query.get('template'));
@@ -26,7 +30,14 @@ export default function Editor() {
         }
     }, [templateContent]);
 
+    useEffect(() => {
+        if (defaultContent) {
+            setData(defaultContent);
+        }
+    }, [defaultContent]);
+
     const [data, setData] = useState(jsonData);
+    // const [data, setData] = useState(jsonData);
     const [globalData, setGlobalData] = useState({});
     const [globalResult, setGlobalResult] = useState({});
 

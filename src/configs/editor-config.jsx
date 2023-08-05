@@ -249,8 +249,9 @@ registerConfig.register({
         </Descriptions>
     ),
     render: ({ globalResult }) => {
+        console.log(globalResult);
         return (
-            <Descriptions title='Result' size='small' style={{ width: '200px' }}>
+            <Descriptions title='Result' size='small' style={{ width: '200px' }} layout='vertical'>
                 {globalResult &&
                     Object.keys(globalResult).map(key => {
                         return (

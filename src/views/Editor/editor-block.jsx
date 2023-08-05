@@ -117,10 +117,6 @@ export default function EditorBlock(props) {
         globalResult: globalResult
     });
 
-    // const onChange = ({ fileList: newFileList }) => {
-    //   fileList = newFileList;
-    // };
-
     const blockClassName = classNames({
         'editor-block-focus': block.focus,
         'editor-block': !block.focus,
