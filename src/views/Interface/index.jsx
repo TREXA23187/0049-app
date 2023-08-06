@@ -37,7 +37,9 @@ export default function Interface(props) {
                     style={{
                         width: templateContent?.container.width + 'px',
                         height: templateContent?.container.height + 'px',
-                        position: 'relative'
+                        position: 'relative',
+                        marginLeft: '-25%',
+                        left: '50%'
                     }}>
                     {templateContent?.blocks.map((block, index) => {
                         return (
@@ -55,18 +57,6 @@ export default function Interface(props) {
                     })}
                 </div>
             </div>
-            {/* <div style={{ position: 'relative' }}>
-                <div
-                    style={{
-                        width: templateContent?.container.width + 'px',
-                        height: templateContent?.container.height + 'px'
-                        // position: 'relative'
-                    }}>
-                    {templateContent?.blocks.map((block, index) => {
-                        return <EditorBlock block={block} key={index} config={config} isPreview={true} />;
-                    })}
-                </div>
-            </div> */}
         </>
     );
 }

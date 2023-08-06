@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer, Button, Form, Input, message, Select, Upload, Divider, Descriptions, Badge, Tag } from 'antd';
+import {
+    Drawer,
+    Button,
+    Form,
+    Input,
+    message,
+    Select,
+    Upload,
+    Divider,
+    Descriptions,
+    Badge,
+    Tag,
+    Checkbox
+} from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '@/constants';
 import { createTask, getTemplateList, getModelList, getTaskList } from '@/api/console';
@@ -7,6 +20,7 @@ import { getFileInfo } from '@/api/file';
 import { useRequest } from '@umijs/hooks';
 import { downloadFile } from '@/api/file';
 import { downloadLink } from '@/utils';
+import HyperParamsItem from './hyper-params-item';
 
 function statusBadge(rol) {
     if (rol === 'pending') {
@@ -55,6 +69,8 @@ export default function TaskDetailDrawer(props) {
     const [modelType, setModelType] = useState();
     const [fileCols, setFileCols] = useState([]);
     const [currentFilePath, setCurrentFilePath] = useState('');
+    const [advancedSetting, setAdvancedSetting] = useState({});
+    const [enableAdvance, setEnableAdvance] = useState(false);
 
     const [fileList, setFileList] = useState([]);
 
@@ -167,6 +183,16 @@ export default function TaskDetailDrawer(props) {
                 }) || [];
 
             delete values.data_file;
+
+            if (enableAdvance) {
+                const hyper_parameters = {};
+                Object.keys(advancedSetting).forEach(key => {
+                    hyper_parameters[key] = values[key];
+                    delete values[key];
+                });
+
+                values.hyper_parameters = hyper_parameters;
+            }
         }
 
         if (taskType === 'deployment') {
@@ -189,6 +215,20 @@ export default function TaskDetailDrawer(props) {
         }
     };
 
+    useEffect(() => {
+        if (advancedSetting) {
+            const newSetting = Object.keys(advancedSetting).reduce((prev, key) => {
+                if (advancedSetting[key].type === 'range') {
+                    prev[key] = advancedSetting[key].option;
+                }
+
+                return prev;
+            }, {});
+
+            form.setFieldsValue({ ...form.getFieldsValue, ...newSetting });
+        }
+    }, [advancedSetting]);
+
     return (
         <>
             {contextHolder}
@@ -210,7 +250,8 @@ export default function TaskDetailDrawer(props) {
                             span: 16
                         }}
                         initialValues={{
-                            ...data
+                            ...data,
+                            enable_advance: enableAdvance
                         }}
                         form={form}
                         onFinish={onFinish}
@@ -256,7 +297,7 @@ export default function TaskDetailDrawer(props) {
 
                         {taskType === 'training' && (
                             <>
-                                <Divider orientation='left' orientationMargin='0' plain>
+                                <Divider orientation='left' orientationMargin='0'>
                                     Training Attributes
                                 </Divider>
 
@@ -288,6 +329,10 @@ export default function TaskDetailDrawer(props) {
                                                     label: item.name
                                                 };
                                             })}
+                                        onChange={value => {
+                                            const model = modelList.filter(item => item.name === value)[0];
+                                            setAdvancedSetting(JSON.parse(model?.hyper_parameters || {}));
+                                        }}
                                     />
                                 </Form.Item>
                                 <Form.Item
@@ -358,6 +403,29 @@ export default function TaskDetailDrawer(props) {
                                         />
                                     </Form.Item>
                                 )}
+
+                                <Divider orientation='left' orientationMargin='0'>
+                                    Advanced Settings
+                                </Divider>
+                                <Form.Item
+                                    name='enable_advance'
+                                    valuePropName='checked'
+                                    wrapperCol={{
+                                        offset: 4,
+                                        span: 16
+                                    }}
+                                    onChange={e => setEnableAdvance(e.target.checked)}>
+                                    <Checkbox>enable</Checkbox>
+                                </Form.Item>
+
+                                {enableAdvance && (
+                                    <>
+                                        <Divider orientation='left' orientationMargin='0' plain>
+                                            Hyper Parameters
+                                        </Divider>
+                                        <HyperParamsItem setting={advancedSetting} />
+                                    </>
+                                )}
                             </>
                         )}
 
@@ -415,7 +483,7 @@ export default function TaskDetailDrawer(props) {
                                 span: 16
                             }}>
                             <Button type='primary' htmlType='submit'>
-                                {isEdit ? 'Update' : 'Submit'}
+                                Submit
                             </Button>
                         </Form.Item>
                     </Form>
