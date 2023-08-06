@@ -5,6 +5,7 @@ import { getInstanceLinkInfo } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import EditorBlock from './editor-block';
 import { registerConfig as config } from '@/configs/editor-config';
+import './index.css';
 
 export default function Interface(props) {
     const query = new URLSearchParams(useLocation().search);

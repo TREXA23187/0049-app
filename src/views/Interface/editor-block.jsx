@@ -1,6 +1,7 @@
 import deepcopy from 'deepcopy';
 import React, { useRef } from 'react';
 import { sendInterfaceData } from '@/api/console';
+import classNames from 'classnames';
 
 export default function EditorBlock(props) {
     const blockRef = useRef();
@@ -59,13 +60,14 @@ export default function EditorBlock(props) {
         globalResult: globalResult
     });
 
+    const blockClassName = classNames({
+        'editor-block-focus': block.focus,
+        'editor-block': !block.focus,
+        'editor-block-preview': true
+    });
+
     return (
-        <div
-            className='editor-block'
-            style={{
-                blockStyles
-            }}
-            ref={blockRef}>
+        <div className={blockClassName} style={blockStyles} ref={blockRef}>
             {RenderComponent}
         </div>
     );

@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import deepcopy from 'deepcopy';
-import axios from 'axios';
 import { post } from '@/utils/request';
 
 // import BlockResize from './block-resize';
