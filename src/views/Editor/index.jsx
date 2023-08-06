@@ -37,7 +37,7 @@ export default function Editor() {
     }, [defaultContent]);
 
     const [data, setData] = useState(jsonData);
-    // const [data, setData] = useState(jsonData);
+
     const [globalData, setGlobalData] = useState({});
     const [globalResult, setGlobalResult] = useState({});
 

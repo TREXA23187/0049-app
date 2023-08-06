@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Radio, Form, Checkbox, message } from 'antd';
-import { createInstanceLink } from '@/api/console';
+import { createInstanceLink, getTemplateInfo, updateTemplate } from '@/api/console';
 
 export default function CreateLinkModal(props) {
     const { isModalOpen, handleOk, handleCancel, data } = props;
@@ -15,7 +15,27 @@ export default function CreateLinkModal(props) {
 
         if (res.code === 0) {
             messageApi.success(res.msg);
-            handleOk(res.data);
+
+            if (res.data.autofill) {
+                const templateRes = await getTemplateInfo({ id: res.data.template_id });
+                const content = JSON.parse(templateRes.data.content);
+                content?.blocks?.forEach(item => {
+                    if (item.key === 'button') {
+                        item.event.url = res.data.redirection;
+                    }
+                });
+
+                const updateTemplateRes = await updateTemplate({
+                    ...templateRes.data,
+                    content: JSON.stringify(content)
+                });
+
+                if (updateTemplateRes.code !== 0) {
+                    messageApi.error(updateTemplateRes.msg);
+                }
+            }
+
+            handleOk(res.data.link);
             form.resetFields();
         } else {
             messageApi.error(res.msg);

@@ -32,7 +32,7 @@ const routes = [
     { path: '/console/model', exact: true, name: 'model', component: Model },
     { path: '/console/task', exact: true, name: 'task', component: Task },
     { path: '/docs', exact: true, name: 'docs', component: Docs },
-    { path: '/interface/:template', exact: true, name: 'interface', component: Interface }
+    { path: '/interface/:instance', exact: true, name: 'interface', component: Interface }
 ];
 
 export default routes;

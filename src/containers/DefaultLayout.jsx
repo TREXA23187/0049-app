@@ -34,11 +34,11 @@ export default function DefaultLayout(props) {
                                         if (p.location.pathname.startsWith('/console')) {
                                             return (
                                                 <ConsoleLayout>
-                                                    <item.component />
+                                                    <item.component {...p} />
                                                 </ConsoleLayout>
                                             );
                                         } else {
-                                            return <item.component />;
+                                            return <item.component {...p} />;
                                         }
                                     }}></Route>
                             );

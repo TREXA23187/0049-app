@@ -73,3 +73,7 @@ export function getImageInfo(params) {
 export function removeImage(params) {
     return del('api/v1/console/image', params);
 }
+
+export function sendInterfaceData(data) {
+    return post('api/v1/console/interface', data);
+}

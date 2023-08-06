@@ -5,7 +5,7 @@ import { getTemplateList, removeTemplate } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import TemplateCard from './template-card';
 import './index.css';
-import SelectTemplateModal from './select-template_modal';
+import SelectTemplateModal from './select-template-modal';
 
 export default function Template() {
     const history = useHistory();
