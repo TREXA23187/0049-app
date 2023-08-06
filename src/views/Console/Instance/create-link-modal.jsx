@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
-import { Button, Modal, Radio, Form, Checkbox } from 'antd';
+import { Button, Modal, Radio, Form, Checkbox, message } from 'antd';
 import { createInstanceLink } from '@/api/console';
 
 export default function CreateLinkModal(props) {
     const { isModalOpen, handleOk, handleCancel, data } = props;
 
+    const [linkType, setLinkType] = useState('private');
+
+    const [messageApi, contextHolder] = message.useMessage();
+    const [form] = Form.useForm();
+
     const onFinish = async values => {
         const res = await createInstanceLink({ ...values, instance: data.name, template: data.template });
-        console.log(res);
-    };
-    const onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
+
+        if (res.code === 0) {
+            messageApi.success(res.msg);
+            handleOk(res.data);
+            form.resetFields();
+        } else {
+            messageApi.error(res.msg);
+        }
     };
 
     return (
         <>
-            <Modal title='Create Link' open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+            {contextHolder}
+            <Modal title='Create Link' open={isModalOpen} onCancel={handleCancel} footer={null}>
                 <Form
                     name='basic'
                     labelCol={{
@@ -29,11 +39,15 @@ export default function CreateLinkModal(props) {
                         padding: '10px'
                     }}
                     initialValues={{
-                        link_type: 'public',
+                        link_type: linkType,
+                        expiration: 1,
                         autofill: true
                     }}
+                    form={form}
                     onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
+                    onFinishFailed={errorInfo => {
+                        console.log('Failed:', errorInfo);
+                    }}
                     autoComplete='off'>
                     <Form.Item label='Instance' name='instance'>
                         <span>{data.name}</span>
@@ -43,11 +57,24 @@ export default function CreateLinkModal(props) {
                     </Form.Item>
 
                     <Form.Item label='Link Type' name='link_type'>
-                        <Radio.Group>
-                            <Radio value='public'>Public Link</Radio>
+                        <Radio.Group
+                            onChange={e => {
+                                setLinkType(e.target.value);
+                            }}>
                             <Radio value='private'>Private Link</Radio>
+                            <Radio value='public'>Public Link</Radio>
                         </Radio.Group>
                     </Form.Item>
+
+                    {linkType === 'private' && (
+                        <Form.Item label='Expiration' name='expiration'>
+                            <Radio.Group>
+                                <Radio value={1}>1 Day</Radio>
+                                <Radio value={3}>3 Day</Radio>
+                                <Radio value={7}>7 Day</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                    )}
 
                     <Form.Item
                         name='autofill'

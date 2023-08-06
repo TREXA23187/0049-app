@@ -10,12 +10,17 @@ const { Text } = Typography;
 
 export default function InstanceDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList, imageList } = props;
-    const { title, description, instance_id, task, url, created_at, task_type } = data;
+    const { name, description, instance_id, task, url, created_at, task_type } = data;
 
     const [status, setStatus] = useState(data.status);
+    const [link, setLink] = useState(data.link);
+
+    const [form] = Form.useForm();
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         setStatus(data.status);
+        setLink(data.link);
     }, [data]);
 
     useEffect(() => {
@@ -32,9 +37,6 @@ export default function InstanceDetailDrawer(props) {
             manual: true
         }
     );
-
-    const [form] = Form.useForm();
-    const [messageApi, contextHolder] = message.useMessage();
 
     const clearDataAndClose = () => {
         form.resetFields();
@@ -58,7 +60,9 @@ export default function InstanceDetailDrawer(props) {
 
     const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
 
-    const handleCreateLinkModelOk = () => {
+    const handleCreateLinkModelOk = newLink => {
+        setLink(newLink);
+        refreshList();
         setIsCreateLinkModalOpen(false);
     };
 
@@ -70,6 +74,8 @@ export default function InstanceDetailDrawer(props) {
                 handleOk={handleCreateLinkModelOk}
                 data={data}
                 handleCancel={() => setIsCreateLinkModalOpen(false)}
+                refreshList={refreshList}
+                updateLink={setLink}
             />
             <Drawer
                 title={isEdit ? 'Create Instance' : 'Instance Detail'}
@@ -177,7 +183,7 @@ export default function InstanceDetailDrawer(props) {
                         </Form.Item>
                     </Form>
                 ) : (
-                    <Descriptions title={title} column={1}>
+                    <Descriptions title={name} column={1}>
                         <Descriptions.Item label='Description'> {description}</Descriptions.Item>
                         <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
                         <Descriptions.Item label='Task'>{task}</Descriptions.Item>
@@ -185,15 +191,18 @@ export default function InstanceDetailDrawer(props) {
                             {task_type === 'training' ? (
                                 <Text copyable>{`${BASE_URL}:${url?.split(':')[1]}`}</Text>
                             ) : (
-                                <Button
-                                    type='link'
-                                    size='small'
-                                    onClick={() => {
-                                        setIsCreateLinkModalOpen(true);
-                                    }}>
-                                    Create Link
-                                    <LinkOutlined />
-                                </Button>
+                                <>
+                                    {link && <Text copyable>{link}</Text>}
+                                    <Button
+                                        type='link'
+                                        size='small'
+                                        onClick={() => {
+                                            setIsCreateLinkModalOpen(true);
+                                        }}>
+                                        Create Link
+                                        <LinkOutlined />
+                                    </Button>
+                                </>
                             )}
                         </Descriptions.Item>
                         <Descriptions.Item label='Status'>
