@@ -123,7 +123,7 @@ export default function ImageDetailDrawer(props) {
                         </Form.Item>
                     </Form>
                 ) : (
-                    <Descriptions title={repository} column={1}>
+                    <Descriptions title={repository} column={1} layout='vertical'>
                         <Descriptions.Item label='Repository'> {repository}</Descriptions.Item>
                         <Descriptions.Item label='Tag'>{tag}</Descriptions.Item>
                         <Descriptions.Item label='Image ID'>{image_id}</Descriptions.Item>

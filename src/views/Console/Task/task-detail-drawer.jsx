@@ -11,7 +11,8 @@ import {
     Descriptions,
     Badge,
     Tag,
-    Checkbox
+    Checkbox,
+    Typography
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '@/constants';
@@ -21,6 +22,8 @@ import { useRequest } from '@umijs/hooks';
 import { downloadFile } from '@/api/file';
 import { downloadLink } from '@/utils';
 import HyperParamsItem from './hyper-params-item';
+
+const { Text } = Typography;
 
 function statusBadge(rol) {
     if (rol === 'pending') {
@@ -62,7 +65,9 @@ export default function TaskDetailDrawer(props) {
         data_file_name,
         data_file_path,
         trained_model_file_name,
-        trained_model_file_path
+        trained_model_file_path,
+        enable_advance,
+        hyper_parameters
     } = data;
 
     const [taskType, setTaskType] = useState();
@@ -488,7 +493,7 @@ export default function TaskDetailDrawer(props) {
                         </Form.Item>
                     </Form>
                 ) : (
-                    <Descriptions title={name} column={1}>
+                    <Descriptions title={name} column={1} layout='vertical'>
                         <Descriptions.Item label='Type:'>
                             <Tag color={type === 'training' ? 'green' : 'blue'}>{type}</Tag>
                         </Descriptions.Item>
@@ -542,6 +547,25 @@ export default function TaskDetailDrawer(props) {
                                     </Button>
                                 )}
                             </Descriptions.Item>
+                        )}
+                        {type === 'training' && enable_advance && hyper_parameters && (
+                            <>
+                                <Descriptions.Item label='Hyper Parameters'>
+                                    <div>
+                                        {Object.keys(JSON.parse(hyper_parameters)).map(key => {
+                                            console.log();
+                                            return (
+                                                <div key={key}>
+                                                    <Text strong>{key}</Text>:
+                                                    <Text code>
+                                                        {JSON.stringify(JSON.parse(hyper_parameters)[key])}
+                                                    </Text>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </Descriptions.Item>
+                            </>
                         )}
                     </Descriptions>
                 )}

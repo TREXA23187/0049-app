@@ -50,7 +50,7 @@ export default function EditorBlock(props) {
                     onClick: async () => {
                         const res = await sendInterfaceData({ data: globalData, url: propName });
                         if (res.code === 0) {
-                            updateGlobalResult({ result: JSON.parse(res.data) });
+                            updateGlobalResult({ result: res.data });
                         }
                     }
                 };

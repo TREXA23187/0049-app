@@ -168,9 +168,9 @@ export default function InstanceDetailDrawer(props) {
                             />
                         </Form.Item>
 
-                        <Form.Item label='URL' name='url'>
+                        {/* <Form.Item label='URL' name='url'>
                             <Input />
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item
                             wrapperCol={{
@@ -183,7 +183,7 @@ export default function InstanceDetailDrawer(props) {
                         </Form.Item>
                     </Form>
                 ) : (
-                    <Descriptions title={name} column={1}>
+                    <Descriptions title={name} column={1} layout='vertical'>
                         <Descriptions.Item label='Description'> {description}</Descriptions.Item>
                         <Descriptions.Item label='Instance ID:'>{instance_id}</Descriptions.Item>
                         <Descriptions.Item label='Task'>{task}</Descriptions.Item>
