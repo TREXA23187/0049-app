@@ -119,8 +119,8 @@ registerConfig.register({
             { label: 'small', value: 'small' },
             { label: 'medium', value: 'medium' },
             { label: 'large', value: 'large' }
-        ]),
-        submit: createSwitchProp('submit button', 'submit', true)
+        ])
+        // submit: createSwitchProp('submit button', 'submit', true)
     },
     event: {
         url: 'Bound URL'
@@ -142,64 +142,64 @@ registerConfig.register({
     }
 });
 
-registerConfig.register({
-    label: 'select',
-    preview: () => <Select style={{ width: 180 }} defaultValue={'select preview'} />,
-    render: ({ props, model }) => {
-        return (
-            <Select
-                style={{ width: 180 }}
-                defaultValue={'render select'}
-                options={props.options || []}
-                {...model?.default}
-            />
-        );
-    },
-    key: 'select',
-    props: {
-        options: createTableProp('options', 'options', {
-            options: [
-                { label: 'label', field: 'label' },
-                { label: 'value', field: 'value' }
-            ],
-            key: 'label'
-        })
-    },
-    model: {
-        default: 'Bound Field'
-    }
-});
+// registerConfig.register({
+//     label: 'select',
+//     preview: () => <Select style={{ width: 180 }} defaultValue={'select preview'} />,
+//     render: ({ props, model }) => {
+//         return (
+//             <Select
+//                 style={{ width: 180 }}
+//                 defaultValue={'render select'}
+//                 options={props.options || []}
+//                 {...model?.default}
+//             />
+//         );
+//     },
+//     key: 'select',
+//     props: {
+//         options: createTableProp('options', 'options', {
+//             options: [
+//                 { label: 'label', field: 'label' },
+//                 { label: 'value', field: 'value' }
+//             ],
+//             key: 'label'
+//         })
+//     },
+//     model: {
+//         default: 'Bound Field'
+//     }
+// });
 
-registerConfig.register({
-    label: 'upload image',
-    preview: () => <Upload listType='picture-card'>+ Upload</Upload>,
-    render: ({ props, model }) => {
-        const maxCount = props.max_image_num || 1;
-        let fileList = model.default?.value || [];
-        fileList = fileList.slice(0, maxCount);
+// registerConfig.register({
+//     label: 'upload image',
+//     preview: () => <Upload listType='picture-card'>+ Upload</Upload>,
+//     render: ({ props, model }) => {
+//         const maxCount = props.max_image_num || 1;
+//         let fileList = model.default?.value || [];
+//         fileList = fileList.slice(0, maxCount);
 
-        return (
-            <ImgCrop rotationSlider>
-                <Upload
-                    action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                    listType='picture-card'
-                    maxCount={maxCount}
-                    fileList={fileList}
-                    disabled={fileList.length >= maxCount}
-                    {...model?.default}>
-                    {fileList.length < maxCount && '+ Upload'}
-                </Upload>
-            </ImgCrop>
-        );
-    },
-    key: 'upload_image',
-    props: {
-        max_image_num: createInputNumProp('max image num', 'max_image_num')
-    },
-    model: {
-        default: 'Bound Field'
-    }
-});
+//         return (
+//             <ImgCrop rotationSlider>
+//                 <Upload
+//                     action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+//                     listType='picture-card'
+//                     maxCount={maxCount}
+//                     fileList={fileList}
+//                     disabled={fileList.length >= maxCount}
+//                     {...model?.default}>
+//                     {fileList.length < maxCount && '+ Upload'}
+//                 </Upload>
+//             </ImgCrop>
+//         );
+//     },
+//     key: 'upload_image',
+//     props: {
+//         max_image_num: createInputNumProp('max image num', 'max_image_num')
+//     },
+//     model: {
+//         default: 'Bound Field'
+//     }
+// });
 
 // const columns = [
 //     {

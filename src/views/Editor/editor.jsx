@@ -209,7 +209,7 @@ export default function EditorApp(props) {
             handler: async () => {
                 if (!templateId) {
                     setExportModalOption({
-                        title: 'Export JSON',
+                        title: 'Save Template',
                         content: JSON.stringify(data),
                         isExport: true,
                         async callback(name, content) {

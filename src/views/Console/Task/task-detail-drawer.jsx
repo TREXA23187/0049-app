@@ -255,7 +255,6 @@ export default function TaskDetailDrawer(props) {
                             span: 16
                         }}
                         initialValues={{
-                            ...data,
                             enable_advance: enableAdvance
                         }}
                         form={form}
