@@ -3,6 +3,7 @@ import { Drawer, Button, Switch, Form, Input, message, Upload, Select } from 'an
 import { BASE_URL } from '@/constants';
 import { createModel } from '@/api/console';
 import { UploadOutlined } from '@ant-design/icons';
+import AddAdvanceItem from './add-advance-item';
 
 export default function ModelDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
@@ -78,6 +79,22 @@ export default function ModelDetailDrawer(props) {
         }) || [''];
 
         delete values.model_file;
+
+        if (values.hyper_parameters) {
+            values.hyper_parameters = values.hyper_parameters.filter(item => item);
+            values.hyper_parameters = values.hyper_parameters.reduce((prev, cur) => {
+                if (cur['param_label'] && cur['param_value']) {
+                    if (cur['param_value'].includes('range')) {
+                        prev[cur['param_label']] = { type: 'range', option: [1, 20] };
+                    } else {
+                        prev[cur['param_label']] = { type: 'select', option: cur['param_value'] };
+                    }
+                }
+
+                return prev;
+            }, {});
+            values.hyper_parameters = JSON.stringify(values.hyper_parameters);
+        }
 
         const res = await createModel(values);
         if (res.code === 0) {
@@ -158,11 +175,11 @@ export default function ModelDetailDrawer(props) {
                         </Upload>
                     </Form.Item>
 
-                    <Form.Item label='Github'>
+                    {/* <Form.Item label='Github'>
                         <Switch onChange={setShowGithub} checked={showGithub} />
-                    </Form.Item>
+                    </Form.Item> */}
 
-                    {showGithub && (
+                    {/* {showGithub && (
                         <Form.Item
                             label='Github Link'
                             name='github_link'
@@ -174,7 +191,11 @@ export default function ModelDetailDrawer(props) {
                             ]}>
                             <Input />
                         </Form.Item>
-                    )}
+                    )} */}
+
+                    <div style={{ marginBottom: '8px' }}>Hyper Parameters:</div>
+
+                    <AddAdvanceItem />
 
                     <Form.Item
                         wrapperCol={{

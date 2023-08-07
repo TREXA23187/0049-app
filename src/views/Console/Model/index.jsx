@@ -40,41 +40,41 @@ export default function Model() {
             dataIndex: 'model_file_name',
             key: 'model_file_name',
             render(rol, record) {
-                return rol && !record.is_default ? (
-                    <div>
-                        <Button
-                            type='link'
-                            onClick={async () => {
-                                const { model_file_name, model_file_path } = record;
+                return (
+                    rol && (
+                        <div>
+                            <Button
+                                type='link'
+                                onClick={async () => {
+                                    const { model_file_name, model_file_path } = record;
 
-                                const res = await downloadFile({
-                                    file_path: model_file_path
-                                });
-
-                                if (res.code === -1) {
-                                    messageApi.error(res.msg);
-                                } else {
-                                    const blob = new Blob([res], {
-                                        type: 'application/octet-stream'
+                                    const res = await downloadFile({
+                                        file_path: model_file_path
                                     });
 
-                                    const link = document.createElement('a');
+                                    if (res.code === -1) {
+                                        messageApi.error(res.msg);
+                                    } else {
+                                        const blob = new Blob([res], {
+                                            type: 'application/octet-stream'
+                                        });
 
-                                    link.download = model_file_name;
+                                        const link = document.createElement('a');
 
-                                    link.href = URL.createObjectURL(blob);
-                                    document.body.appendChild(link);
-                                    link.click();
+                                        link.download = model_file_name;
 
-                                    URL.revokeObjectURL(link.href);
-                                    document.body.removeChild(link);
-                                }
-                            }}>
-                            {rol}
-                        </Button>
-                    </div>
-                ) : (
-                    '-'
+                                        link.href = URL.createObjectURL(blob);
+                                        document.body.appendChild(link);
+                                        link.click();
+
+                                        URL.revokeObjectURL(link.href);
+                                        document.body.removeChild(link);
+                                    }
+                                }}>
+                                {rol}
+                            </Button>
+                        </div>
+                    )
                 );
             }
         },
