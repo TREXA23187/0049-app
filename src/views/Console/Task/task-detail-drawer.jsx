@@ -124,7 +124,7 @@ export default function TaskDetailDrawer(props) {
     }, [data]);
 
     const fileUploadProps = {
-        action: `http://${BASE_URL}:3000/api/v1/file/upload?type=data`,
+        action: `http://${BASE_URL}:3000/api/v1/file/upload/data`,
         headers: {
             authorization: 'authorization-text'
         },

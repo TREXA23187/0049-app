@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Col, Row, Button, Tabs, Table, Empty, Alert } from 'antd';
+import { Col, Row, Button, Tabs, Table, Empty, Alert, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import InstanceCard from './instance-card';
 import InstanceDetailDrawer from './instance-detail-drawer';
-import { getInstanceList, getImageList, getImageInfo } from '@/api/console';
+import { getInstanceList, getImageList, getImageInfo, removeImage } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
 import ImageDetailDrawer from './image-detail-drawer';
 
 export default function Console() {
     const { t } = useTranslation();
+
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [instanceDetailDrawerOpen, setInstanceDetailDrawOpen] = useState(false);
     const [imageDetailDrawerOpen, setImageDetailDrawOpen] = useState(false);
@@ -89,14 +91,14 @@ export default function Console() {
         },
         {
             title: t('Action'),
-            render(rol) {
+            render(record) {
                 return (
                     <div>
                         <Button
                             type='link'
                             onClick={() => {
                                 setIsEditImageDrawer(false);
-                                setCurrentImageData(rol);
+                                setCurrentImageData(record);
                                 setImageDetailDrawOpen(true);
                             }}>
                             {t('Detail')}
@@ -104,15 +106,16 @@ export default function Console() {
                         <Button
                             type='text'
                             danger
-                            disabled
+                            disabled={record.status === 'in use'}
                             onClick={async () => {
-                                // const res = await removeTemplate({ id: rol.id });
-                                // if (res.code === 0) {
-                                //     messageApi.success('removed');
-                                //     refresh();
-                                // } else {
-                                //     messageApi.error('remove failed');
-                                // }
+                                const res = await removeImage({ image_id: record.image_id });
+                                console.log(res);
+                                if (res.code === 0) {
+                                    messageApi.success(res.msg);
+                                    refreshImageList();
+                                } else {
+                                    messageApi.error(res.msg);
+                                }
                             }}>
                             {t('Remove')}
                         </Button>
@@ -182,6 +185,7 @@ export default function Console() {
 
     return (
         <div style={{ position: 'relative' }}>
+            {contextHolder}
             <Tabs defaultActiveKey='1' items={tabItems} type='card' onChange={setCurrentTab} />
             {showBuildingAlert && (
                 <Alert

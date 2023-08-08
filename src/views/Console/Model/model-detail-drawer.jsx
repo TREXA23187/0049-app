@@ -28,7 +28,7 @@ export default function ModelDetailDrawer(props) {
     }, [data]);
 
     const fileUploadProps = {
-        action: `http://${BASE_URL}:3000/api/v1/file/upload?type=model`,
+        action: `http://${BASE_URL}:3000/api/v1/file/upload/model`,
         beforeUpload: file => {
             const isPyFile = file.type === 'text/x-python-script';
             if (!isPyFile) {

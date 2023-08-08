@@ -14,7 +14,7 @@ export default function InstanceDetailDrawer(props) {
     const { name, description, instance_id, task, url, created_at, task_type } = data;
 
     const [status, setStatus] = useState(data.status);
-    const [link, setLink] = useState(data.link);
+    const [link, setLink] = useState(data.link || '');
 
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
@@ -193,7 +193,7 @@ export default function InstanceDetailDrawer(props) {
                                 <Text copyable>{`${BASE_URL}:${url?.split(':')[1]}`}</Text>
                             ) : (
                                 <>
-                                    {link && <Text copyable>{link}</Text>}
+                                    {link && <Text copyable>{link.replace('127.0.0.1', BASE_URL)}</Text>}
                                     <Button
                                         type='link'
                                         size='small'
