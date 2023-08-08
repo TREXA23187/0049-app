@@ -106,7 +106,7 @@ export default function Console() {
                         <Button
                             type='text'
                             danger
-                            disabled={record.status === 'in use'}
+                            disabled={record.status !== 'unused'}
                             onClick={async () => {
                                 const res = await removeImage({ image_id: record.image_id });
                                 console.log(res);
