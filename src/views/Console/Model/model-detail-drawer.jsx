@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer, Button, Switch, Form, Input, message, Upload, Select } from 'antd';
+import { Drawer, Button, Descriptions, Form, Input, message, Upload, Select, Tag, Typography } from 'antd';
 import { BASE_URL } from '@/constants';
 import { createModel } from '@/api/console';
 import { UploadOutlined } from '@ant-design/icons';
+import { downloadFile } from '@/api/file';
+import { downloadLink } from '@/utils';
 import AddAdvanceItem from './add-advance-item';
+
+const { Text } = Typography;
 
 export default function ModelDetailDrawer(props) {
     const { data, open, isEdit, onClose, refreshList } = props;
+    const { name, type, model_file_name, model_file_path, hyper_parameters, created_at } = data;
 
     const [fileList, setFileList] = useState([]);
     const [showGithub, setShowGithub] = useState(false);
@@ -118,68 +123,69 @@ export default function ModelDetailDrawer(props) {
         <>
             {contextHolder}
             <Drawer
-                title={isEdit ? 'Edit Model' : 'Create Model'}
+                title={isEdit ? 'Create Model' : 'Model Details'}
                 placement='right'
                 onClose={clearDataAndClose}
                 open={open}>
-                <Form
-                    name='basic'
-                    style={{
-                        maxWidth: '85%'
-                    }}
-                    labelCol={{
-                        span: 10
-                    }}
-                    wrapperCol={{
-                        span: 16
-                    }}
-                    form={form}
-                    onFinish={onFinish}
-                    autoComplete='off'>
-                    <Form.Item
-                        label='Name'
-                        name='name'
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input name'
-                            }
-                        ]}>
-                        <Input />
-                    </Form.Item>
+                {isEdit ? (
+                    <Form
+                        name='basic'
+                        style={{
+                            maxWidth: '85%'
+                        }}
+                        labelCol={{
+                            span: 10
+                        }}
+                        wrapperCol={{
+                            span: 16
+                        }}
+                        form={form}
+                        onFinish={onFinish}
+                        autoComplete='off'>
+                        <Form.Item
+                            label='Name'
+                            name='name'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input name'
+                                }
+                            ]}>
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item
-                        label='Type'
-                        name='type'
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select model type'
-                            }
-                        ]}>
-                        <Select
-                            options={[
-                                { value: 'classification', label: 'Classification' },
-                                { value: 'regression', label: 'Regression' }
-                            ]}
-                        />
-                    </Form.Item>
+                        <Form.Item
+                            label='Type'
+                            name='type'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please select model type'
+                                }
+                            ]}>
+                            <Select
+                                options={[
+                                    { value: 'classification', label: 'Classification' },
+                                    { value: 'regression', label: 'Regression' }
+                                ]}
+                            />
+                        </Form.Item>
 
-                    <Form.Item
-                        label='Model File (.py)'
-                        name='model_file'
-                        valuePropName='fileList'
-                        getValueFromEvent={normFile}>
-                        <Upload {...fileUploadProps}>
-                            {fileList?.length < 1 && <Button icon={<UploadOutlined />}>Click to Upload</Button>}
-                        </Upload>
-                    </Form.Item>
+                        <Form.Item
+                            label='Model File (.py)'
+                            name='model_file'
+                            valuePropName='fileList'
+                            getValueFromEvent={normFile}>
+                            <Upload {...fileUploadProps}>
+                                {fileList?.length < 1 && <Button icon={<UploadOutlined />}>Click to Upload</Button>}
+                            </Upload>
+                        </Form.Item>
 
-                    {/* <Form.Item label='Github'>
+                        {/* <Form.Item label='Github'>
                         <Switch onChange={setShowGithub} checked={showGithub} />
                     </Form.Item> */}
 
-                    {/* {showGithub && (
+                        {/* {showGithub && (
                         <Form.Item
                             label='Github Link'
                             name='github_link'
@@ -193,20 +199,65 @@ export default function ModelDetailDrawer(props) {
                         </Form.Item>
                     )} */}
 
-                    <div style={{ marginBottom: '8px' }}>Hyper Parameters:</div>
+                        <div style={{ marginBottom: '8px' }}>Hyper Parameters:</div>
 
-                    <AddAdvanceItem />
+                        <AddAdvanceItem />
 
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16
-                        }}>
-                        <Button type='primary' htmlType='submit'>
-                            {isEdit ? 'Update' : 'Submit'}
-                        </Button>
-                    </Form.Item>
-                </Form>
+                        <Form.Item
+                            wrapperCol={{
+                                offset: 8,
+                                span: 16
+                            }}>
+                            <Button type='primary' htmlType='submit'>
+                                {isEdit ? 'Update' : 'Submit'}
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                ) : (
+                    <Descriptions title={name} column={1} layout='vertical'>
+                        <Descriptions.Item label='Name'>{name}</Descriptions.Item>
+                        <Descriptions.Item label='Type'>
+                            <Tag color={type === 'classification' ? 'green' : 'blue'}>{type}</Tag>
+                        </Descriptions.Item>
+                        <Descriptions.Item label='Hyper Parameters'>
+                            {hyper_parameters && (
+                                <div>
+                                    {Object.keys(JSON.parse(hyper_parameters)).map(key => {
+                                        console.log();
+                                        return (
+                                            <div key={key}>
+                                                <Text strong>{key}</Text>:
+                                                <Text code>
+                                                    {JSON.stringify(JSON.parse(hyper_parameters)[key]['option'])}
+                                                </Text>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </Descriptions.Item>
+                        <Descriptions.Item label='Model File'>
+                            <Button
+                                type='link'
+                                size='small'
+                                onClick={async () => {
+                                    const res = await downloadFile({
+                                        file_name: model_file_name,
+                                        file_path: model_file_path
+                                    });
+
+                                    if (res.code === -1) {
+                                        messageApi.error(res.msg);
+                                    } else {
+                                        downloadLink(res, model_file_name);
+                                    }
+                                }}>
+                                {model_file_name}
+                            </Button>
+                        </Descriptions.Item>
+                        <Descriptions.Item label='Created At'>{new Date(created_at).toString()}</Descriptions.Item>
+                    </Descriptions>
+                )}
             </Drawer>
         </>
     );

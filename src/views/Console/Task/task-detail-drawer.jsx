@@ -493,14 +493,14 @@ export default function TaskDetailDrawer(props) {
                     </Form>
                 ) : (
                     <Descriptions title={name} column={1} layout='vertical'>
-                        <Descriptions.Item label='Type:'>
+                        <Descriptions.Item label='Type'>
                             <Tag color={type === 'training' ? 'green' : 'blue'}>{type}</Tag>
                         </Descriptions.Item>
                         <Descriptions.Item label='Status'>{statusBadge(status)}</Descriptions.Item>
                         {type === 'training' ? (
-                            <Descriptions.Item label='Model:'>{model}</Descriptions.Item>
+                            <Descriptions.Item label='Model'>{model}</Descriptions.Item>
                         ) : (
-                            <Descriptions.Item label='Template:'>{template}</Descriptions.Item>
+                            <Descriptions.Item label='Template'>{template}</Descriptions.Item>
                         )}
                         <Descriptions.Item label='Created At'>{new Date(created_at).toString()}</Descriptions.Item>
                         {type === 'training' && (

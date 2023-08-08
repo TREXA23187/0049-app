@@ -125,7 +125,7 @@ export default function Model() {
                         type='primary'
                         style={{ margin: '0 10px' }}
                         onClick={() => {
-                            setIsEditDrawer(false);
+                            setIsEditDrawer(true);
                             setDrawOpen(true);
                         }}>
                         New Model
