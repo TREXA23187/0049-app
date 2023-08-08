@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Table, Button, message, Row, Col, Tag } from 'antd';
+import { Table, Button, message, Row, Col, Tag, Space } from 'antd';
 import { useRequest } from '@umijs/hooks';
 import { useTranslation } from 'react-i18next';
 import { getModelList, removeModel } from '@/api/console';
 import { downloadFile } from '@/api/file';
+import { downloadLink } from '@/utils';
 import ModelDetailDrawer from './model-detail-drawer';
 
 export default function Model() {
@@ -32,7 +33,13 @@ export default function Model() {
             dataIndex: 'type',
             key: 'type',
             render(rol, record) {
-                return rol === 'classification' ? <Tag color='green'>{rol}</Tag> : <Tag color='blue'>{rol}</Tag>;
+                const cunstomTag = record.is_default ? null : <Tag color='orange'>custom</Tag>;
+                return (
+                    <Space>
+                        {rol === 'classification' ? <Tag color='green'>{rol}</Tag> : <Tag color='blue'>{rol}</Tag>}
+                        {cunstomTag}
+                    </Space>
+                );
             }
         },
         {
@@ -55,20 +62,7 @@ export default function Model() {
                                     if (res.code === -1) {
                                         messageApi.error(res.msg);
                                     } else {
-                                        const blob = new Blob([res], {
-                                            type: 'application/octet-stream'
-                                        });
-
-                                        const link = document.createElement('a');
-
-                                        link.download = model_file_name;
-
-                                        link.href = URL.createObjectURL(blob);
-                                        document.body.appendChild(link);
-                                        link.click();
-
-                                        URL.revokeObjectURL(link.href);
-                                        document.body.removeChild(link);
+                                        downloadLink(res, model_file_name);
                                     }
                                 }}>
                                 {rol}
@@ -96,10 +90,10 @@ export default function Model() {
                             onClick={() => {
                                 setCurrentModelData(record);
                                 setDrawOpen(true);
-                                setIsEditDrawer(true);
+                                setIsEditDrawer(false);
                             }}
                             disabled={record.is_default}>
-                            {t('Edit')}
+                            {t('Detail')}
                         </Button>
                         <Button
                             type='text'

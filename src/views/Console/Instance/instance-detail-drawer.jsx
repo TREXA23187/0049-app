@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Descriptions, Badge, Button, Select, Form, Input, message, Space, Typography } from 'antd';
-import { LinkOutlined } from '@ant-design/icons';
-import { createInstance, operateInstance, removeInstance } from '@/api/console';
+import { LinkOutlined, DownloadOutlined } from '@ant-design/icons';
+import { createInstance, operateInstance, removeInstance, getInstanceLogs } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 import { BASE_URL } from '@/constants';
+import { downloadLink } from '@/utils';
 import CreateLinkModal from './create-link-modal';
 
 const { Text } = Typography;
@@ -262,7 +263,23 @@ export default function InstanceDetailDrawer(props) {
                                 </div>
                             )}
                         </Descriptions.Item>
-                        <Descriptions.Item label='created at'>{new Date(created_at).toString()}</Descriptions.Item>
+                        <Descriptions.Item label='Created at'>{new Date(created_at).toString()}</Descriptions.Item>
+                        <Descriptions.Item label='Log File'>
+                            <Button
+                                type='link'
+                                size='small'
+                                onClick={async () => {
+                                    const res = await getInstanceLogs({ instance_id });
+                                    if (res.code === -1) {
+                                        messageApi.error(res.msg);
+                                    } else {
+                                        downloadLink(res, 'logs.txt');
+                                    }
+                                }}>
+                                Download Log File
+                                <DownloadOutlined />
+                            </Button>
+                        </Descriptions.Item>
                     </Descriptions>
                 )}
             </Drawer>

@@ -6,8 +6,11 @@ export function createInstance(data) {
 export function getInstanceList() {
     return get('api/v1/console/instance/list');
 }
-export function getInstanceInfo() {
-    return get('api/v1/console/instance/info');
+export function getInstanceInfo(params) {
+    return get('api/v1/console/instance/info', params);
+}
+export function getInstanceLogs(params) {
+    return get('api/v1/console/instance/logs', params);
 }
 export function operateInstance(data) {
     return post('api/v1/console/instance/operate', data);

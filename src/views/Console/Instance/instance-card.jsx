@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Badge, Typography } from 'antd';
 import { BASE_URL } from '@/constants';
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
 
 export default function InstanceCard(props) {
     const { data, onCardClick } = props;
