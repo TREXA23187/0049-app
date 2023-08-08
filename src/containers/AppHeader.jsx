@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Dropdown, Layout, Avatar, Badge } from 'antd';
+import { Dropdown, Layout, Avatar, Image } from 'antd';
 import {
     ContainerOutlined,
     EditOutlined,
@@ -13,6 +13,7 @@ import {
 import { changeLocale } from '@/locale/utils';
 import { ls } from '@/utils/storage';
 import { useTranslation } from 'react-i18next';
+import AppLogo from '@/assets/images/app.png';
 
 const { Header } = Layout;
 
@@ -98,10 +99,11 @@ const AppHeader = props => {
     return (
         <Header className='header' style={{ height: '50px' }}>
             <div className='left'>
-                <GithubOutlined
-                    type='github'
-                    style={{ marginRight: '30px', cursor: 'pointer', fontSize: '32px', color: '#000' }}
+                <Image
+                    src={AppLogo}
+                    style={{ cursor: 'pointer', width: '50px' }}
                     onClick={() => history.push('/index')}
+                    preview={false}
                 />
 
                 {location.pathname !== '/index' && (

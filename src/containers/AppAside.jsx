@@ -1,18 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Dropdown, Avatar } from 'antd';
-import {
-    GithubOutlined,
-    EditOutlined,
-    LogoutOutlined,
-    SettingOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined
-} from '@ant-design/icons';
+import { Layout, Dropdown, Avatar, Image } from 'antd';
+import { EditOutlined, LogoutOutlined, SettingOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import SideMenu from '@/components/SideMenu';
 import { changeLocale } from '@/locale/utils';
 import { ls } from '@/utils/storage';
 import { useTranslation } from 'react-i18next';
+import AppLogo from '@/assets/images/app.png';
 
 const { Sider } = Layout;
 
@@ -83,7 +77,7 @@ const AppAside = props => {
         <Sider className='aside' trigger={null} collapsible collapsed={menuToggle} style={{ position: 'relative' }}>
             <div className='logo' style={{ margin: '30px 0' }}>
                 <a rel='noopener noreferrer' href='/'>
-                    <GithubOutlined type='github' style={{ fontSize: '3.8rem', color: '#fff' }} />
+                    <Image src={AppLogo} />
                 </a>
             </div>
             <SideMenu menu={menu} collapsed={menuToggle} updateTabs={updateTabs}></SideMenu>
