@@ -1,5 +1,6 @@
 import React from 'react';
 import { Anchor, Layout, Row, Col, Typography, Image, Table } from 'antd';
+import Figure_1_1 from './img/figure-1.1.png';
 import Figure_2_1 from './img/figure-2.1.png';
 import Figure_2_2 from './img/figure-2.2.png';
 import Figure_2_3 from './img/figure-2.3.png';
@@ -137,6 +138,12 @@ export default function Docs() {
                                     the public can also be customized or built based on the scheme provided by the
                                     system.
                                 </Paragraph>
+                                <Paragraph>
+                                    You can enter the <Text strong>Console</Text> interface through the menu in the
+                                    upper right corner of the homepage.
+                                </Paragraph>
+                                <Image src={Figure_1_1} />
+
                                 <Title level={2} id='models'>
                                     Models
                                 </Title>
@@ -333,7 +340,6 @@ export default function Docs() {
                                 <Paragraph>
                                     <TemplateEditorTable />
                                 </Paragraph>
-
                                 <Title level={2} id='images'>
                                     Images
                                 </Title>

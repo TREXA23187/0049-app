@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import echarts from 'echarts/lib/echarts'
-import 'echarts/lib/chart/scatter'
-import 'echarts/lib/component/tooltip'
-import 'echarts/lib/component/title'
-import 'echarts/lib/component/legend'
+import React, { useEffect } from 'react';
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/scatter';
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/title';
+import 'echarts/lib/component/legend';
 
 let data = [
     [
@@ -48,11 +48,11 @@ let data = [
         [38225, 81.4, 64715810, 'United Kingdom', 2015],
         [53354, 79.1, 321773631, 'United States', 2015]
     ]
-]
+];
 
 const Scatter = () => {
     useEffect(() => {
-        let myChart = echarts.init(document.getElementById('scatter'))
+        let myChart = echarts.init(document.getElementById('scatter'));
         myChart.setOption({
             legend: {
                 right: 10,
@@ -79,13 +79,13 @@ const Scatter = () => {
                     data: data[0],
                     type: 'scatter',
                     symbolSize: function(data) {
-                        return Math.sqrt(data[2]) / 5e2
+                        return Math.sqrt(data[2]) / 5e2;
                     },
                     label: {
                         emphasis: {
                             show: true,
                             formatter: function(param) {
-                                return param.data[3]
+                                return param.data[3];
                             },
                             position: 'top'
                         }
@@ -113,13 +113,13 @@ const Scatter = () => {
                     data: data[1],
                     type: 'scatter',
                     symbolSize: function(data) {
-                        return Math.sqrt(data[2]) / 5e2
+                        return Math.sqrt(data[2]) / 5e2;
                     },
                     label: {
                         emphasis: {
                             show: true,
                             formatter: function(param) {
-                                return param.data[3]
+                                return param.data[3];
                             },
                             position: 'top'
                         }
@@ -143,13 +143,13 @@ const Scatter = () => {
                     }
                 }
             ]
-        })
+        });
         window.addEventListener('resize', function() {
-            myChart.resize()
-        })
-    }, [])
+            myChart.resize();
+        });
+    }, []);
 
-    return <div id='scatter' style={{ height: 300 }}></div>
-}
+    return <div id='scatter' style={{ height: 300 }}></div>;
+};
 
-export default Scatter
+export default Scatter;
