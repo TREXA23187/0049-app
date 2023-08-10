@@ -52,7 +52,7 @@ export default function Console() {
 
     useEffect(() => {
         runImageList();
-    }, [currentTab]);
+    }, [currentTab, runImageList]);
 
     const columns = [
         {
