@@ -13,10 +13,12 @@ import {
     Badge,
     Tag,
     Space,
+    Tooltip,
+    Tree,
     Checkbox,
     Typography
 } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { BASE_URL } from '@/constants';
 import { createTask, getTemplateList, getModelList, getTaskList } from '@/api/console';
 import { getFileInfo } from '@/api/file';
@@ -26,6 +28,73 @@ import { downloadLink } from '@/utils';
 import HyperParamsItem from './hyper-params-item';
 
 const { Text } = Typography;
+
+const treeData = [
+    {
+        title: (
+            <Tooltip title='Exploratory Data Analysis'>
+                <span>
+                    EDA
+                    <QuestionCircleOutlined style={{ marginLeft: '5px', color: 'blue' }} />
+                </span>
+            </Tooltip>
+        ),
+        key: 'eda',
+        children: [
+            {
+                title: 'Data Summary',
+                key: 'data_summary'
+            },
+            {
+                title: 'Descriptive Statistics',
+                key: 'descriptive_statistics'
+            },
+            {
+                title: 'Correlation analysis',
+                key: 'correlation_analysis'
+            }
+        ]
+    },
+    {
+        title: 'Feature Engineering',
+        key: 'feature_engineering',
+        children: [
+            {
+                title: 'one-hot coding',
+                key: 'one_hot'
+            },
+            {
+                title: 'normalisation',
+                key: 'normalisation'
+            }
+        ]
+    },
+    {
+        title: 'Model Performance',
+        key: 'model_performance',
+        children: [
+            {
+                title: 'Accuracy',
+                key: 'accuracy'
+            },
+            {
+                title: 'Recall',
+                key: 'recall'
+            },
+            {
+                title: 'F1 Score',
+                key: 'f1_score'
+            }
+        ]
+    }
+];
+
+const onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+};
+const onCheck = (checkedKeys, info) => {
+    console.log('onCheck', checkedKeys, info);
+};
 
 function statusBadge(rol) {
     if (rol === 'pending') {
@@ -453,6 +522,26 @@ export default function TaskDetailDrawer(props) {
                                         <Divider orientation='left' orientationMargin='0' plain>
                                             Evaluation
                                         </Divider>
+                                        <Form.Item
+                                            label='Operations'
+                                            name='operations'
+                                            labelCol={{
+                                                span: 8
+                                            }}>
+                                            <Tree
+                                                checkable
+                                                defaultExpandedKeys={[
+                                                    'eda',
+                                                    'feature_engineering',
+                                                    'model_performance'
+                                                ]}
+                                                defaultCheckedKeys={['eda', 'feature_engineering', 'model_performance']}
+                                                onSelect={onSelect}
+                                                onCheck={onCheck}
+                                                treeData={treeData}
+                                                style={{ width: '250px', marginTop: '5px' }}
+                                            />
+                                        </Form.Item>
                                     </>
                                 )}
                             </>
