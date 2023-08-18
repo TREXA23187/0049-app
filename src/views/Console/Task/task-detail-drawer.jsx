@@ -4,6 +4,7 @@ import {
     Button,
     Form,
     Input,
+    InputNumber,
     message,
     Select,
     Upload,
@@ -11,6 +12,7 @@ import {
     Descriptions,
     Badge,
     Tag,
+    Space,
     Checkbox,
     Typography
 } from 'antd';
@@ -425,9 +427,32 @@ export default function TaskDetailDrawer(props) {
                                 {enableAdvance && (
                                     <>
                                         <Divider orientation='left' orientationMargin='0' plain>
+                                            Training & Testing Sets
+                                        </Divider>
+                                        <Form.Item label='Training:Testing' name='split_ratio'>
+                                            <Space>
+                                                <InputNumber
+                                                    min={1}
+                                                    max={99}
+                                                    defaultValue={70}
+                                                    style={{ width: '60px' }}
+                                                />
+                                                :
+                                                <InputNumber
+                                                    min={1}
+                                                    max={99}
+                                                    defaultValue={30}
+                                                    style={{ width: '60px' }}
+                                                />
+                                            </Space>
+                                        </Form.Item>
+                                        <Divider orientation='left' orientationMargin='0' plain>
                                             Hyper Parameters
                                         </Divider>
                                         <HyperParamsItem setting={advancedSetting} />
+                                        <Divider orientation='left' orientationMargin='0' plain>
+                                            Evaluation
+                                        </Divider>
                                     </>
                                 )}
                             </>
