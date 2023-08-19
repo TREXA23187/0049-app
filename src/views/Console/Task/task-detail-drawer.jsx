@@ -29,7 +29,7 @@ import HyperParamsItem from './hyper-params-item';
 
 const { Text } = Typography;
 
-const treeData = [
+const evaluationTreeData = [
     {
         title: (
             <Tooltip title='Exploratory Data Analysis'>
@@ -538,7 +538,7 @@ export default function TaskDetailDrawer(props) {
                                                 defaultCheckedKeys={['eda', 'feature_engineering', 'model_performance']}
                                                 onSelect={onSelect}
                                                 onCheck={onCheck}
-                                                treeData={treeData}
+                                                treeData={evaluationTreeData}
                                                 style={{ width: '250px', marginTop: '5px' }}
                                             />
                                         </Form.Item>

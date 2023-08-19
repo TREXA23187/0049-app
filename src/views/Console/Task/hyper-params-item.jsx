@@ -26,6 +26,12 @@ import { Select, Form, Slider, InputNumber } from 'antd';
 //         solver: { type: 'select', option: ['lbfgs', 'sgd', 'adam'] },
 //         max_iter: { type: 'select', option: [100, 200, 500, 1000] },
 //         alpha: { type: 'select', option: [0.0001, 0.001, 0.01, 0.1] }
+//     },
+//     {
+//         random_state: { type: 'select', option: [] },
+//         kernel: { type: 'select', option: ['rbf', 'linear'] },
+//         gamma: { type: 'select', option: [1e-3, 1e-4, 'scale', 'auto'] },
+//         C: { type: 'select', option: [1, 10, 100, 1000] }
 //     }
 // ];
 
