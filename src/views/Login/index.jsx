@@ -53,7 +53,7 @@ const Login = props => {
             {contextHolder}
             <div className='model'>
                 <div className='login-form'>
-                    <h3>{t('0049 APP')}</h3>
+                    <h3>{t('ModelFlow')}</h3>
                     <Divider />
                     <Form onFinish={handleSubmitFinish}>
                         <Form.Item

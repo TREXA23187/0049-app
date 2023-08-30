@@ -4,7 +4,7 @@ import { getTaskList, createImage } from '@/api/console';
 import { useRequest } from '@umijs/hooks';
 
 export default function ImageDetailDrawer(props) {
-    const { data, open, isEdit, onClose, refreshList, showBuildingAlert } = props;
+    const { data, open, isEdit, onClose, refreshList, showBuildingAlert, isShowBuildingAlert } = props;
     const { repository, size, created_at, tag, image_id } = data;
 
     const { data: taskList, loading } = useRequest(async () => {
